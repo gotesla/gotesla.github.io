@@ -73,46 +73,23 @@
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
 }
-/* 1. 隐藏原生鼠标 */
-html, body, a, button {
-    cursor: none !important;
+/* --- 极简高级感：Sweezy 风格深灰点 --- */
+
+html, body {
+    /* 这是一个 16x16 的精致深灰色圆点，带微弱的半透明羽化边缘 */
+    cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAd0lEQVQ4T2NkoBAwUqifYdQAhtEGBgYmCPv///8pDAwM+7EZZmBgYGRgYPgfLAdSgF9fXz8DAwMDI7pCfAb8+fPnPyMjIwO6Anz6+vqZGRgYGJAl8Onpa2ZkZGBAl8Cnpa+dkZGBAV0CX6a+dkZGBgZ0CXyZ+toZGBgY0CUAAP8mOAn9V97LAAAAAElFTkSuQmCC") 8 8, auto !important;
 }
 
-/* 2. 极简黑点（主指针） */
-#cursor-dot {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 6px;
-    background: #222; /* 纯黑灰色 */
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 999999;
+/* 悬停在链接上时，变成那种“带空心圆”的精致手指（Sweezy 常用交互） */
+a:hover,
+button:hover,
+.card-widget:hover,
+.site-page:hover {
+    cursor: pointer !important;
 }
 
-/* 3. 极简圆环（拖尾感） */
-#cursor-ring {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 30px;
-    height: 30px;
-    border: 1.5px solid rgba(0, 0, 0, 0.2); /* 半透明圆圈 */
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 999998;
-    /* 关键：通过 transition 实现那种“慢半拍”的拖尾感 */
-    transition: transform 0.1s ease-out;
-    margin: -12px 0 0 -12px; /* 让圆环中心对齐圆点 */
-}
+/* 别忘了把之前那个丑 SVG 删干净 */
 
-/* 4. 碰到链接时，圆环稍微放大一点，增加高级交互感 */
-a:hover ~ #cursor-ring,
-button:hover ~ #cursor-ring {
-    transform: scale(1.5);
-    background: rgba(0, 0, 0, 0.05);
-}
 
 
 
