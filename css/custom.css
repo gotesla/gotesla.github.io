@@ -73,29 +73,20 @@
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
 }
-/* --- 极简高级感鼠标 --- */
+/* --- 极简高级感：圆圈指针方案 --- */
 
-/* 1. 强制隐藏系统默认丑箭头 */
-html, body, a, button {
-    cursor: none !important;
+/* 1. 全局样式：换成一个半透明的精致小圆圈 */
+html, body {
+    cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/default.cur), auto !important;
 }
 
-/* 2. 定义那个精致的小点 */
-#cursor-dot {
-    position: fixed;
-    width: 6px;
-    height: 6px;
-    background: rgba(0, 0, 0, 0.6); /* 深灰色，不沉闷 */
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 999999;
-    transition: transform 0.2s ease-out, background 0.2s ease-out; /* 关键：呼吸感动画 */
+/* 2. 悬停样式：当移到链接、按钮、卡片上时，换成另一个稍微大一点的圆圈 */
+a:hover,
+button:hover,
+.card-widget:hover,
+.site-page:hover,
+#aside-content .card-widget:hover {
+    cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/pointer.cur), pointer !important;
 }
 
-/* 3. 悬停到链接时的“放大呼吸”效果 */
-.cursor-hover {
-    transform: scale(4); /* 放大 4 倍变成一个大圆环 */
-    background: rgba(0, 0, 0, 0.1) !important; /* 变得非常透，高级感来源 */
-    border: 1px solid rgba(0, 0, 0, 0.2);
-}
 
