@@ -159,32 +159,31 @@
   isToc: true,
   pageType: 'post'
 }</script><link rel="stylesheet" href="/css/custom.css"><style>
-  /* 1. 阅读进度条 */
+  /* 1. 进度条 */
   #read-progress {
     position: fixed; top: 0; left: 0; width: 0; height: 3px;
-    background: #ff6b81; z-index: 10000;
-    transition: width 0.2s ease-out;
+    background: #ff6b81; z-index: 10000; transition: width 0.2s ease-out;
   }
 
-  /* 2. 初始状态：首页卡片、侧边栏、文章主体、甚至是分类/标签页列表 */
+  /* 2. 初始状态 (合并所有可能影响的容器) */
   #recent-posts > .recent-post-item, 
-  #aside-content .card-widget, 
-  .layout#post, 
-  #article-container,
-  #page { 
+  .card-widget, 
+  #post, 
+  #page,
+  #article-container { 
     opacity: 0 !important;
     transform: scale(0.9) translateY(40px) !important;
     transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1) !important;
     will-change: opacity, transform;
   }
 
-  /* 3. 入场后的激活状态 */
+  /* 3. 激活状态 */
   .is-visible {
     opacity: 1 !important;
     transform: scale(1) translateY(0) !important;
   }
 
-  /* 4. 点击爱心样式 */
+  /* 4. 点击爱心 */
   .click-heart {
     position: fixed; z-index: 9999; pointer-events: none;
     color: #ff6b81; font-size: 20px;
@@ -210,25 +209,8 @@
 <p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 </article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">chengs</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2026/03/07/hello-world/">http://example.com/2026/03/07/hello-world/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">null</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/Giselle3.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/Giselle3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">chengs</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/07/hello-world/" title="Hello World">Hello World</a><time datetime="2026-03-07T09:49:45.269Z" title="发表于 2026-03-07 17:49:45">2026-03-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script>
   (function() {
-    /* --- A. 核心动画逻辑 --- */
-    const initAnimation = () => {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-          }
-        });
-      }, { threshold: 0.05 });
-
-      // 选取所有目标：卡片、侧边栏、文章页主体、普通页面主体
-      const targets = document.querySelectorAll('#recent-posts > .recent-post-item, #aside-content .card-widget, .layout#post, #article-container, #page');
-      targets.forEach(item => {
-        if (item) observer.observe(item);
-      });
-    };
-
-    /* --- B. 阅读进度条逻辑 --- */
-    const initProgress = () => {
+    const initAll = () => {
+      // 1. 进度条逻辑
       if (!document.getElementById('read-progress')) {
         const progDiv = document.createElement('div');
         progDiv.id = 'read-progress';
@@ -237,16 +219,29 @@
       window.onscroll = () => {
         const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
         const el = document.getElementById('read-progress');
-        if (el) el.style.width = scrolled + "%";
+        if (el) el.style.width = (winScroll / height) * 100 + "%";
       };
+
+      // 2. 核心动画：增加对侧边栏 .card-widget 的精准捕捉
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.05 });
+
+      // 选取首页卡片、侧边栏小工具、文章/页面主体
+      const items = document.querySelectorAll('#recent-posts > .recent-post-item, .card-widget, #post, #page, #article-container');
+      items.forEach(item => {
+        if (item) observer.observe(item);
+      });
     };
 
-    /* --- C. 点击爱心逻辑 (全局只需绑定一次) --- */
-    const initHeart = () => {
-      if (window.hasHeartInit) return;
-      window.addEventListener('click', function(e) {
+    // 3. 点击爱心 (全局只需一次)
+    if (!window.heartInit) {
+      window.addEventListener('click', (e) => {
         const heart = document.createElement('div');
         heart.className = 'click-heart';
         heart.innerHTML = '❤';
@@ -254,21 +249,15 @@
         heart.style.top = (e.clientY - 10) + 'px';
         heart.style.color = `hsl(${Math.random() * 360}, 100%, 75%)`; 
         document.body.appendChild(heart);
-        setTimeout(() => { heart.remove(); }, 800);
+        setTimeout(() => heart.remove(), 800);
       });
-      window.hasHeartInit = true;
-    };
+      window.heartInit = true;
+    }
 
-    // 首次运行
-    initAnimation();
-    initProgress();
-    initHeart();
-
-    // 适配 Pjax：当页面切换完成后重新触发动画和进度条
-    document.addEventListener('pjax:complete', () => {
-      initAnimation();
-      initProgress();
-    });
+    // 初始加载执行
+    initAll();
+    // Pjax 切换后执行
+    document.addEventListener('pjax:complete', initAll);
   })();
 </script>
 <script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
