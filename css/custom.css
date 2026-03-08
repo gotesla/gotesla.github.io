@@ -144,65 +144,60 @@ button:hover,
         .recent-post-item:hover .post_cover img {
             transform: scale(1.05) !important;
         }
-/* --- 深度强化：xwybq 风格亚克力 & 呼吸外发光 --- */
+/* --- 极致丝滑：中心扩散入场特效 --- */
 
-/* 1. 基础样式：必须加这么多选择器才能强制生效 */
-#recent-posts > .recent-post-item,
-.recent-post-item {
-    background: rgba(255, 255, 255, 0.4) !important;
-    backdrop-filter: blur(15px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+/* 1. 基础样式：保持亚克力清透质感 */
+#recent-posts > .recent-post-item {
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(15px) saturate(170%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(170%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
     border-radius: 15px !important;
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important; /* 加入回弹效果 */
-    /* 初始状态：非常淡的银色外边框，不显眼 */
-    box-shadow: 0 0 0 rgba(255, 255, 255, 0) !important;
-    transform: translateY(0);
+    margin-bottom: 25px !important;
+    overflow: hidden !important;
+    /* 初始状态：完全透明、中间缩拢、带模糊 */
+    opacity: 0;
+    filter: blur(8px);
+    /* clip-path 是实现“向两边扩散”的神技：初始只显示中间一条缝 */
+    clip-path: inset(0 50% 0 50%);
+    transform: scale(0.9); /* 稍微缩小，增加张力 */
+    /* 过渡曲线：采用非常缓和的贝塞尔曲线，模拟丝滑感 */
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 
-    /* 2. 核心：鼠标悬停时的【发光】与【淡入】 */
-    #recent-posts > .recent-post-item:hover,
-    .recent-post-item:hover {
-        transform: translateY(-12px) scale(1.01) !important; /* 向上跳一下并微放大 */
-        background: rgba(255, 255, 255, 0.8) !important; /* 这里的 0.8 就是淡入变亮的效果 */
-        border-color: rgba(255, 255, 255, 0.9) !important;
-        /* --- 重点：银白色外发光特效 --- */
-        /* 第一层：深色投影增加立体感 | 第二层：白色强光增加发光感 */
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 0 20px rgba(255, 255, 255, 0.6) !important;
-    }
-
-    /* 3. 封面图联动：增强对比度 */
-    .recent-post-item .post_cover img {
-        filter: brightness(0.8) contrast(1.1); /* 初始稍微压暗，增加高级感 */
-        transition: all 0.6s ease !important;
-    }
-
-    .recent-post-item:hover .post_cover img {
-        filter: brightness(1.05) contrast(1.2); /* 悬停时瞬间“点亮” */
-        transform: scale(1.1) !important;
-    }
-
-/* 4. 滚动淡入动画 (如果刚才那个没生效，换这个更基础的写法) */
-@keyframes xwybq-fade-in {
+/* 2. 滚动激活：执行扩散动画 */
+@keyframes xwybq-spread {
     0% {
         opacity: 0;
-        transform: translateY(50px);
         filter: blur(10px);
+        clip-path: inset(0 50% 0 50%);
+        transform: scale(0.85);
     }
 
     100% {
         opacity: 1;
-        transform: translateY(0);
         filter: blur(0);
+        clip-path: inset(0 0 0 0); /* 扩散到完整大小 */
+        transform: scale(1);
     }
 }
 
-/* 应用滚动动画 (利用 Hexo 默认可能带的 aos 或类似类名，或者直接全局挂载) */
-.recent-post-item {
-    animation: xwybq-fade-in 0.8s ease-out both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 20%;
+#recent-posts > .recent-post-item {
+    /* 绑定滚动时间轴 */
+    view-timeline-name: --item-reveal;
+    view-timeline-axis: block;
+    animation: xwybq-spread linear both;
+    animation-timeline: --item-reveal;
+    /* 动画触发区间：进入屏幕 5% 开始，到 35% 时完全展开 */
+    animation-range: entry 5% cover 35%;
 }
+
+    /* 3. 悬停反馈：保持之前的高级感 */
+    #recent-posts > .recent-post-item:hover {
+        transform: translateY(-10px) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 0 20px rgba(255, 255, 255, 0.4) !important;
+    }
 
 
 
