@@ -73,50 +73,47 @@
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
 }
-/* --- Sweezy 风格：极简黑色圆环鼠标 --- */
-
-/* 1. 全局样式：正常移动时是一个精致的黑色空心圆 */
-html, body {
-    cursor: url(https://cdn.jsdelivr.net/gh/uk0/hosting@master/cursors/sweezy/default.cur), auto !important;
-}
-
-/* 2. 悬停样式：移到链接/按钮上时，变成实心点或带箭头的圆 */
-a:hover,
-button:hover,
-.card-widget:hover,
-.site-page:hover,
-#aside-content .card-widget:hover {
-    cursor: url(https://cdn.jsdelivr.net/gh/uk0/hosting@master/cursors/sweezy/pointer.cur), pointer !important;
-}
-
-/* 3. 容错处理：确保如果图片加载慢，鼠标不会消失 */
-* {
-    transition: cursor 0.2s ease;
-}
-/* --- 让高级感鼠标“显形” --- */
-
-/* 1. 隐藏原本那个白箭头，腾出位子给圆环 */
+/* 1. 隐藏原生鼠标 */
 html, body, a, button {
     cursor: none !important;
 }
 
-/* 2. 强制给生成的跟随圆环上色（深灰色，高级感） */
-.magic-dot {
-    width: 6px !important;
-    height: 6px !important;
-    background: #333 !important; /* 核心黑点 */
+/* 2. 极简黑点（主指针） */
+#cursor-dot {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    background: #222; /* 纯黑灰色 */
+    border-radius: 50%;
+    pointer-events: none;
     z-index: 999999;
 }
 
-.magic-ring {
-    width: 30px !important;
-    height: 30px !important;
-    border: 1.5px solid rgba(0, 0, 0, 0.2) !important; /* 外围浅色圆环 */
+/* 3. 极简圆环（拖尾感） */
+#cursor-ring {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border: 1.5px solid rgba(0, 0, 0, 0.2); /* 半透明圆圈 */
+    border-radius: 50%;
+    pointer-events: none;
     z-index: 999998;
-    transition: all 0.1s ease-out; /* 丝滑拖尾 */
+    /* 关键：通过 transition 实现那种“慢半拍”的拖尾感 */
+    transition: transform 0.1s ease-out;
+    margin: -12px 0 0 -12px; /* 让圆环中心对齐圆点 */
 }
+
+/* 4. 碰到链接时，圆环稍微放大一点，增加高级交互感 */
+a:hover ~ #cursor-ring,
+button:hover ~ #cursor-ring {
+    transform: scale(1.5);
+    background: rgba(0, 0, 0, 0.05);
+}
+
 
 
 
