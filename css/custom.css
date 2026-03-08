@@ -144,6 +144,71 @@ button:hover,
         .recent-post-item:hover .post_cover img {
             transform: scale(1.05) !important;
         }
+/* --- 最终整合：xwybq 风格亚克力 + 滚动淡入 --- */
+
+/* 1. 基础长相：极简、清透、亚克力 */
+#recent-posts > .recent-post-item {
+    /* --- 亚克力质感 --- */
+    background: rgba(255, 255, 255, 0.45) !important;
+    backdrop-filter: blur(15px) saturate(170%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(170%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 15px !important;
+    margin-bottom: 25px !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+    /* --- 动画准备：丝滑过渡 --- */
+    transition: all 0.5s cubic-bezier(0.3, 1, 0.3, 1) !important;
+    /* --- 魔法核心：滚动触发动作 --- */
+    view-timeline-name: --item-visible;
+    view-timeline-axis: block;
+    animation: xwybq-fade-in-up linear both;
+    animation-timeline: --item-visible;
+    animation-range: entry 5% cover 25%; /* 调整这里可以改变淡入的时机 */
+}
+
+    /* 2. 悬停反馈：上浮、变亮、深度影 */
+    #recent-posts > .recent-post-item:hover {
+        transform: translateY(-10px) !important;
+        background: rgba(255, 255, 255, 0.75) !important;
+        border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12) !important;
+    }
+
+/* 3. 图片细节：指上去变亮放大 */
+.recent-post-item .post_cover img {
+    filter: brightness(0.85);
+    transition: all 0.6s cubic-bezier(0.3, 1, 0.3, 1) !important;
+}
+
+.recent-post-item:hover .post_cover img {
+    filter: brightness(1);
+    transform: scale(1.08) !important;
+}
+
+/* 4. 定义滚动的淡入上浮动画 */
+@keyframes xwybq-fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(60px) scale(0.95);
+        filter: blur(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* 5. 浏览器兼容兜底 */
+@supports not (animation-timeline: --item-visible) {
+    #recent-posts > .recent-post-item {
+        opacity: 1;
+        transform: none;
+        animation: none;
+    }
+}
 
 
 
