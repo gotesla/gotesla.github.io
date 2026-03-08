@@ -190,16 +190,15 @@
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">1</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-08T09:02:39.052Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">1</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-08T09:06:14.928Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script>
   (function() {
     const runAnimation = () => {
-      // 1. 自动寻找并标记需要动画的元素
       const selectors = [
-        '#recent-posts > .recent-post-item', // 首页卡片
-        '.card-widget',                      // 侧边栏
-        '#post',                             // 文章主体
-        '#page',                             // 自定义页主体
-        '.layout'                            // 备用布局容器
+        '#recent-posts > .recent-post-item', 
+        '.card-widget',                      
+        '#post',                             
+        '#page',                             
+        '.layout'                            
       ];
       
       const targets = document.querySelectorAll(selectors.join(','));
@@ -209,21 +208,29 @@
         }
       });
 
-      // 2. 监听滚动入场
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
+            // 进入视口：强制添加类名
             entry.target.classList.add('is-visible');
+          } else {
+            // 离开视口：强制移除类名，且不加任何判断，确保重置
+            entry.target.classList.remove('is-visible');
           }
         });
-      }, { threshold: 0.05 });
+      }, { 
+        threshold: 0.01,      // 只要有一丁点看不见就开始准备重置
+        rootMargin: '-50px 0px -50px 0px' // 增加缓冲区，让重置更果断
+      });
 
       targets.forEach(item => {
-        if (item) observer.observe(item);
+        if (item) {
+          observer.unobserve(item); // 先解绑，防止重复绑定监听器
+          observer.observe(item);
+        }
       });
     };
 
-    // 3. 阅读进度条
     const initProgress = () => {
       if (!document.getElementById('read-progress')) {
         const progDiv = document.createElement('div');
@@ -238,7 +245,6 @@
       };
     };
 
-    // 4. 点击爱心
     if (!window.heartInit) {
       window.addEventListener('click', (e) => {
         const heart = document.createElement('div');
@@ -253,11 +259,9 @@
       window.heartInit = true;
     }
 
-    // 执行
     initProgress();
     runAnimation();
     
-    // 适配 Pjax
     document.addEventListener('pjax:complete', () => {
       initProgress();
       runAnimation();
