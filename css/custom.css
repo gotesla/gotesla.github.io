@@ -86,6 +86,61 @@ button:hover,
 .site-page:hover {
     cursor: url('/cursors/pointer.cur'), pointer !important;
 }
+/* --- 方案一：Giselle 极简流光卡片 --- */
+
+/* 1. 为所有侧边栏卡片准备好底座 */
+#aside-content .card-widget {
+    position: relative;
+    overflow: hidden; /* 保证流光不会跑出卡片 */
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7) !important; /* 配合之前的磨砂效果 */
+    transition: all 0.3s ease;
+}
+
+    /* 2. 定义那道“光”：平时是隐形的 */
+    #aside-content .card-widget::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        /* 银白色渐变流光，像一道细闪 */
+        background: conic-gradient( transparent, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.6), transparent 30% );
+        transition: opacity 0.5s;
+        opacity: 0; /* 平时看不见 */
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* 3. 触发魔法：鼠标滑过时，光开始转动 */
+    #aside-content .card-widget:hover::before {
+        opacity: 1;
+        animation: border-rotate 2.5s linear infinite;
+    }
+
+/* 4. 动画效果：让光绕圈跑 */
+@keyframes border-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* 5. 遮罩层：保证光只出现在边缘，不遮挡卡片内容 */
+#aside-content .card-widget::after {
+    content: '';
+    position: absolute;
+    inset: 2px; /* 这里的 2px 决定了边框的粗细，越小越精致 */
+    background: inherit;
+    border-radius: 10px;
+    z-index: 2;
+}
+
+/* 6. 确保卡片内部的文字和内容浮在最上面 */
+#aside-content .card-widget > * {
+    position: relative;
+    z-index: 3;
+}
 
 
 
