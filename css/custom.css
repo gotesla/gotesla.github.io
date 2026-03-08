@@ -1,3 +1,20 @@
+/* 强行注入背景图 */
+#web_bg {
+    background: url(https://pic.imgdb.cn/item/64cb5d481ddac8892d192c01.jpg) !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* 磨砂玻璃层（微调透明度） */
+#aside-content .card-widget,
+#content-inner .recent-post-item {
+    background: rgba(255, 255, 255, 0.4) !important; /* 调到 0.4，更透一点 */
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-radius: 12px !important;
+}
+
 /* 让所有主要卡片变成磨砂玻璃感 */
 #aside-content .card-widget,
 #content-inner .recent-post-item,
