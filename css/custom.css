@@ -5,7 +5,7 @@
 #footer,
 #nav {
     /* 0.6 是透明度，你可以根据喜好在 0.4 到 0.8 之间调整 */
-    background: rgba(255, 255, 255, 0.6) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
     /* 模糊像素，20px 是比较明显的磨砂感 */
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
