@@ -1,8 +1,42 @@
-/* 暴力测试：如果生效，你的所有卡片会变成半透明红色，且带模糊 */
+/* 让所有主要卡片变成磨砂玻璃感 */
 #aside-content .card-widget,
-#content-inner .recent-post-item {
-    background: rgba(255, 0, 0, 0.3) !important; /* 红色半透明 */
+#content-inner .recent-post-item,
+.layout > div:first-child:not(.recent-posts),
+#footer,
+#nav {
+    /* 0.6 是透明度，你可以根据喜好在 0.4 到 0.8 之间调整 */
+    background: rgba(255, 255, 255, 0.6) !important;
+    /* 模糊像素，20px 是比较明显的磨砂感 */
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
-    border: 5px solid yellow !important; /* 加上显眼的黄色边框 */
+    /* 圆角和细微的边框，增加精致感 */
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 移除页眉可能存在的背景色，让它也透亮起来 */
+#page-header {
+    background: transparent !important;
+}
+/* 让所有主要卡片变成磨砂玻璃感 */
+#aside-content .card-widget,
+#content-inner .recent-post-item,
+.layout > div:first-child:not(.recent-posts),
+#footer,
+#nav {
+    /* 0.6 是透明度，你可以根据喜好在 0.4 到 0.8 之间调整 */
+    background: rgba(255, 255, 255, 0.6) !important;
+    /* 模糊像素，20px 是比较明显的磨砂感 */
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    /* 圆角和细微的边框，增加精致感 */
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 移除页眉可能存在的背景色，让它也透亮起来 */
+#page-header {
+    background: transparent !important;
 }
