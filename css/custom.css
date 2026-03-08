@@ -113,6 +113,18 @@ button:hover ~ #cursor-ring {
     transform: scale(1.5);
     background: rgba(0, 0, 0, 0.05);
 }
+/* --- 致美化鼠标本地化最终版 --- */
+html, body {
+    cursor: url('/cursors/default.cur'), auto !important;
+}
+
+/* 鼠标指到链接、按钮、侧边栏卡片时切换形态 */
+a:hover,
+button:hover,
+.card-widget:hover,
+.site-page:hover {
+    cursor: url('/cursors/pointer.cur'), pointer !important;
+}
 
 
 
