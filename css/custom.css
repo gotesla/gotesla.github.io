@@ -73,27 +73,12 @@
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
 }
-/* --- 高级感极简鼠标方案 --- */
-
-/* 1. 把所有点击元素的默认箭头，换成一个精致的半透明圆圈 */
-html, body, a, button, .card-widget, #nav .site-page {
-    /* 我们直接借用一个大厂常用的精致圆圈图标 */
-    cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/default.cur), auto !important;
+/* 确保默认鼠标在加载出特效前是正常的，避免消失 */
+html, body {
+    cursor: default;
 }
 
-    /* 2. 当鼠标移到链接（文字链接、按钮）上时，换成另一个样式（比如带箭头的圆圈） */
-    a:hover, button:hover, .site-page:hover {
-        cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/pointer.cur), pointer !important;
-    }
-/* --- 高级感极简鼠标方案 --- */
-
-/* 1. 把所有点击元素的默认箭头，换成一个精致的半透明圆圈 */
-html, body, a, button, .card-widget, #nav .site-page {
-    /* 我们直接借用一个大厂常用的精致圆圈图标 */
-    cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/default.cur), auto !important;
+/* 如果你想要鼠标在悬停到链接上时更有科技感，加这一行 */
+a:hover, button:hover {
+    cursor: pointer !important;
 }
-
-    /* 2. 当鼠标移到链接（文字链接、按钮）上时，换成另一个样式（比如带箭头的圆圈） */
-    a:hover, button:hover, .site-page:hover {
-        cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/pointer.cur), pointer !important;
-    }
