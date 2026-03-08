@@ -73,20 +73,26 @@
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
 }
-/* --- 极简高级感：圆圈指针方案 --- */
+/* --- Sweezy 风格：极简黑色圆环鼠标 --- */
 
-/* 1. 全局样式：换成一个半透明的精致小圆圈 */
+/* 1. 全局样式：正常移动时是一个精致的黑色空心圆 */
 html, body {
-    cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/default.cur), auto !important;
+    cursor: url(https://cdn.jsdelivr.net/gh/uk0/hosting@master/cursors/sweezy/default.cur), auto !important;
 }
 
-/* 2. 悬停样式：当移到链接、按钮、卡片上时，换成另一个稍微大一点的圆圈 */
+/* 2. 悬停样式：移到链接/按钮上时，变成实心点或带箭头的圆 */
 a:hover,
 button:hover,
 .card-widget:hover,
 .site-page:hover,
 #aside-content .card-widget:hover {
-    cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/pointer.cur), pointer !important;
+    cursor: url(https://cdn.jsdelivr.net/gh/uk0/hosting@master/cursors/sweezy/pointer.cur), pointer !important;
 }
+
+/* 3. 容错处理：确保如果图片加载慢，鼠标不会消失 */
+* {
+    transition: cursor 0.2s ease;
+}
+
 
 
