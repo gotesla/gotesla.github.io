@@ -359,8 +359,8 @@
   list-folded="true">
 </meting-js>
 
-</script>
-    (function() {
+<script>
+  (function() {
     const runAnimation = () => {
       const selectors = ['#recent-posts > .recent-post-item', '.card-widget', '#post', '#page', '.layout'];
       const targets = document.querySelectorAll(selectors.join(','));
@@ -392,7 +392,7 @@
       window.onscroll = () => {
         const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const el = document.getElementById('read-progress');
+        const el = document.getElementById('read-progress'); // 修正了这里的空格
         if (el) el.style.width = (winScroll / height) * 100 + "%";
       };
     };
