@@ -1,20 +1,16 @@
-/* 让所有白色的方块变透明并带有磨砂感 */
+/* 核心：让卡片变透明并模糊 */
 #aside-content .card-widget,
 #content-inner .recent-post-item,
 .layout > div:first-child:not(.recent-posts),
 #footer,
 #nav {
-    /* 0.7 代表 70% 的透明度，你可以根据喜好改成 0.5 或 0.8 */
-    background: rgba(255, 255, 255, 0.7) !important;
-    /* 这一行是灵魂：让背景模糊，产生磨砂玻璃效果 */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    /* 圆角大小，让方块变圆润 */
-    border-radius: 15px !important;
-    /* 细微的边框，增加高级质感 */
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    /* 柔和的阴影 */
-    box-shadow: 0 8px 16px rgba(0,0,0,0.05) !important;
+    background: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border-radius: 12px !important;
 }
-background: rgba(255, 255, 255, 0.7) !important;
-backdrop-filter: blur(10px) !important;
+
+/* 可选：让背景图片稍微暗一点，衬托出磨砂感 */
+#web_bg {
+    filter: brightness(0.8);
+}
