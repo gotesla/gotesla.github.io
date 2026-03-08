@@ -73,29 +73,27 @@
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
 }
-/* 自定义圆点鼠标样式 */
-#cursor {
-    position: fixed;
-    width: 8px; /* 小圆点大小 */
-    height: 8px;
-    background: #333; /* 核心深色小圆点 */
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 99999;
+/* --- 高级感极简鼠标方案 --- */
+
+/* 1. 把所有点击元素的默认箭头，换成一个精致的半透明圆圈 */
+html, body, a, button, .card-widget, #nav .site-page {
+    /* 我们直接借用一个大厂常用的精致圆圈图标 */
+    cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/default.cur), auto !important;
 }
 
-#cursor-outer {
-    position: fixed;
-    width: 30px; /* 外层拖尾圆环大小 */
-    height: 30px;
-    border: 1px solid rgba(0, 0, 0, 0.2); /* 半透明边框 */
-    border-radius: 50%;
-    pointer-events: none;
-    transition: all 0.08s ease-out; /* 这就是那个丝滑的拖尾感 */
-    z-index: 99998;
+    /* 2. 当鼠标移到链接（文字链接、按钮）上时，换成另一个样式（比如带箭头的圆圈） */
+    a:hover, button:hover, .site-page:hover {
+        cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/pointer.cur), pointer !important;
+    }
+/* --- 高级感极简鼠标方案 --- */
+
+/* 1. 把所有点击元素的默认箭头，换成一个精致的半透明圆圈 */
+html, body, a, button, .card-widget, #nav .site-page {
+    /* 我们直接借用一个大厂常用的精致圆圈图标 */
+    cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/default.cur), auto !important;
 }
 
-/* 隐藏原本那个丑丑的默认箭头 */
-html, body, a, button {
-    cursor: none !important;
-}
+    /* 2. 当鼠标移到链接（文字链接、按钮）上时，换成另一个样式（比如带箭头的圆圈） */
+    a:hover, button:hover, .site-page:hover {
+        cursor: url(https://cdn.jsdelivr.net/gh/tuyrax/blog-assets@master/images/cursor/pointer.cur), pointer !important;
+    }
