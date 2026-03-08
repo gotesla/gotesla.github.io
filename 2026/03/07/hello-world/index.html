@@ -311,15 +311,27 @@
 <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
 
-<meting-js
-  server="netease" 
-  type="djradio" 
-  id="349623778" 
-  fixed="true" 
-  mini="true"
-  autoplay="false"
-  theme="#ff6b81"
-  order="list"
-  list-folded="true">
-</meting-js>
+<div id="aplayer-footer">
+  <meting-js
+    server="netease" 
+    type="djradio" 
+    id="349623778" 
+    fixed="true" 
+    mini="true"
+    autoplay="false"
+    theme="#ff6b81"
+    order="list"
+    list-folded="true"
+    preload="auto">
+  </meting-js>
+</div>
+
+<script>
+  /* 这里的代码确保在 Pjax 切换页面后播放器依然稳定 */
+  document.addEventListener('pjax:complete', function () {
+    if (window.aplayers && window.aplayers.length > 0) {
+      window.aplayers[0].destroy(); // 防止切页产生多个播放器
+    }
+  });
+</script>
 <script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
