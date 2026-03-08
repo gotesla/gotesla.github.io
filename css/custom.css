@@ -1,6 +1,6 @@
 /* 强行注入背景图 */
 #web_bg {
-    background: url(https://pic.imgdb.cn/item/64cb5d481ddac8892d192c01.jpg) !important;
+    background: url(/img/Giselle4.jpg) !important;
     background-attachment: fixed !important;
     background-size: cover !important;
     background-position: center !important;
