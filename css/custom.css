@@ -93,6 +93,30 @@ button:hover,
 * {
     transition: cursor 0.2s ease;
 }
+/* --- 让高级感鼠标“显形” --- */
+
+/* 1. 隐藏原本那个白箭头，腾出位子给圆环 */
+html, body, a, button {
+    cursor: none !important;
+}
+
+/* 2. 强制给生成的跟随圆环上色（深灰色，高级感） */
+.magic-dot {
+    width: 6px !important;
+    height: 6px !important;
+    background: #333 !important; /* 核心黑点 */
+    position: fixed;
+    z-index: 999999;
+}
+
+.magic-ring {
+    width: 30px !important;
+    height: 30px !important;
+    border: 1.5px solid rgba(0, 0, 0, 0.2) !important; /* 外围浅色圆环 */
+    position: fixed;
+    z-index: 999998;
+    transition: all 0.1s ease-out; /* 丝滑拖尾 */
+}
 
 
 
