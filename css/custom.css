@@ -9,7 +9,7 @@
 /* 磨砂玻璃层（微调透明度） */
 #aside-content .card-widget,
 #content-inner .recent-post-item {
-    background: rgba(255, 255, 255, 0.4) !important; /* 调到 0.4，更透一点 */
+    background: rgba(255, 255, 255, 0.6) !important; /* 调到 0.4，更透一点 */
     backdrop-filter: blur(15px) !important;
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
