@@ -313,20 +313,19 @@
 
 <div id="aplayer-footer">
   <meting-js
-    server="netease" 
-    type="djradio" 
-    id="349623778" 
-    fixed="true" 
+    server="netease"
+    type="playlist"
+    id="664718409"
+    fixed="true"
     mini="true"
     autoplay="false"
     theme="#ff6b81"
-    order="list"
+    order="random"
     list-folded="true"
     preload="auto">
   </meting-js>
 </div>
 
-<script>
   /* 这里的代码确保在 Pjax 切换页面后播放器依然稳定 */
   document.addEventListener('pjax:complete', function () {
     if (window.aplayers && window.aplayers.length > 0) {
