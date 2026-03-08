@@ -73,12 +73,24 @@
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
 }
-/* 确保默认鼠标在加载出特效前是正常的，避免消失 */
-html, body {
-    cursor: default;
+/* 自定义跟随圆环的样式 */
+#cursor {
+    position: fixed;
+    width: 6px; /* 中间实心点 */
+    height: 6px;
+    background: #222; /* 深色 */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
 }
 
-/* 如果你想要鼠标在悬停到链接上时更有科技感，加这一行 */
-a:hover, button:hover {
-    cursor: pointer !important;
+#cursor-outer {
+    position: fixed;
+    width: 28px; /* 外部跟随圆圈 */
+    height: 28px;
+    border: 1.5px solid rgba(0, 0, 0, 0.3); /* 半透明圆环 */
+    border-radius: 50%;
+    pointer-events: none;
+    transition: all 0.1s ease-out; /* 关键：这决定了拖尾的丝滑度 */
+    z-index: 9998;
 }
