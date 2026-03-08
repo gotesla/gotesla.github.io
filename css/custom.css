@@ -113,6 +113,37 @@ button:hover,
         position: relative;
         z-index: 2;
     }
+/* --- 首页文章列表：xwybq 风格亚克力淡入上浮 --- */
+
+/* 1. 基础状态：设置初始的透明度与模糊 */
+#recent-posts > .recent-post-item {
+    background: rgba(255, 255, 255, 0.6) !important; /* 半透明背景 */
+    backdrop-filter: blur(12px); /* 毛玻璃核心 */
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3); /* 极细白边 */
+    border-radius: 15px; /* 圆角更圆润，更有现代感 */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important; /* 贝塞尔曲线控制丝滑度 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* 初始微弱阴影 */
+    overflow: hidden;
+}
+
+    /* 2. 悬停状态：淡入、上浮、影变 */
+    #recent-posts > .recent-post-item:hover {
+        transform: translateY(-8px); /* 向上优雅浮起 8px */
+        background: rgba(255, 255, 255, 0.85) !important; /* 悬停时稍微变亮，产生“淡入”感 */
+        border: 1px solid rgba(255, 255, 255, 0.6); /* 边框亮起 */
+        /* 模仿 xwybq 的深邃阴影：让卡片看起来真的悬浮在背景上方 */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* 3. 图片放大特效：如果你首页有封面图，鼠标移上去图片会微微放大 */
+    #recent-posts > .recent-post-item .post_cover img {
+        transition: transform 0.6s ease !important;
+    }
+
+    #recent-posts > .recent-post-item:hover .post_cover img {
+        transform: scale(1.05); /* 图片放大 5%，增加动态感 */
+    }
 
 
 
