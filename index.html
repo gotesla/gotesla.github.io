@@ -156,20 +156,20 @@
     transition: width 0.2s ease-out;
   }
 
-  /* 2. 初始状态 (首页卡片、侧边栏、文章主体) */
+  /* 2. 初始状态：首页卡片、侧边栏、文章主体、甚至是分类/标签页列表 */
   #recent-posts > .recent-post-item, 
   #aside-content .card-widget, 
-  #post { 
+  .layout#post, 
+  #article-container,
+  #page { 
     opacity: 0 !important;
     transform: scale(0.9) translateY(40px) !important;
     transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1) !important;
     will-change: opacity, transform;
   }
 
-  /* 3. 入场后的状态 */
-  #recent-posts > .recent-post-item.is-visible, 
-  #aside-content .card-widget.is-visible, 
-  #post.is-visible {
+  /* 3. 入场后的激活状态 */
+  .is-visible {
     opacity: 1 !important;
     transform: scale(1) translateY(0) !important;
   }
@@ -204,7 +204,7 @@
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">1</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-08T08:47:49.800Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"><script>window.typedJSFn = {
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">1</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-08T08:52:41.179Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"><script>window.typedJSFn = {
   init: str => {
     window.typed = new Typed('#subtitle', Object.assign({
       strings: str,
@@ -262,45 +262,64 @@ btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
 typedJSFn.run(subtitleType)
 </script></div><script>
   (function() {
-    /* 1. 阅读进度条逻辑 */
-    const progDiv = document.createElement('div');
-    progDiv.id = 'read-progress';
-    document.body.appendChild(progDiv);
-    window.addEventListener('scroll', () => {
-      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
-      const progressEl = document.getElementById('read-progress');
-      if (progressEl) progressEl.style.width = scrolled + "%";
-    });
+    /* --- A. 核心动画逻辑 --- */
+    const initAnimation = () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.05 });
 
-    /* 2. 滚动入场监听 (首页卡片 + 侧边栏 + 文章页主体) */
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-        } else {
-          // 如果希望滑走后再滑回来依然有动画，保留下面这一行；否则注释掉
-          entry.target.classList.remove('is-visible');
-        }
+      // 选取所有目标：卡片、侧边栏、文章页主体、普通页面主体
+      const targets = document.querySelectorAll('#recent-posts > .recent-post-item, #aside-content .card-widget, .layout#post, #article-container, #page');
+      targets.forEach(item => {
+        if (item) observer.observe(item);
       });
-    }, { threshold: 0.1 }); // 露头 10% 触发
+    };
 
-    // 获取所有需要动画的元素：首页卡片、侧边栏小部件、文章页主体
-    const targets = document.querySelectorAll('#recent-posts > .recent-post-item, #aside-content .card-widget, #post');
-    targets.forEach(item => observer.observe(item));
+    /* --- B. 阅读进度条逻辑 --- */
+    const initProgress = () => {
+      if (!document.getElementById('read-progress')) {
+        const progDiv = document.createElement('div');
+        progDiv.id = 'read-progress';
+        document.body.appendChild(progDiv);
+      }
+      window.onscroll = () => {
+        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        const el = document.getElementById('read-progress');
+        if (el) el.style.width = scrolled + "%";
+      };
+    };
 
-    /* 3. 鼠标点击爱心特效 (随机颜色版) */
-    window.addEventListener('click', function(e) {
-      const heart = document.createElement('div');
-      heart.className = 'click-heart';
-      heart.innerHTML = '❤';
-      heart.style.left = (e.clientX - 10) + 'px';
-      heart.style.top = (e.clientY - 10) + 'px';
-      // 每次点击都会产生一个随机的明亮颜色
-      heart.style.color = `hsl(${Math.random() * 360}, 100%, 75%)`; 
-      document.body.appendChild(heart);
-      setTimeout(() => { heart.remove(); }, 800);
+    /* --- C. 点击爱心逻辑 (全局只需绑定一次) --- */
+    const initHeart = () => {
+      if (window.hasHeartInit) return;
+      window.addEventListener('click', function(e) {
+        const heart = document.createElement('div');
+        heart.className = 'click-heart';
+        heart.innerHTML = '❤';
+        heart.style.left = (e.clientX - 10) + 'px';
+        heart.style.top = (e.clientY - 10) + 'px';
+        heart.style.color = `hsl(${Math.random() * 360}, 100%, 75%)`; 
+        document.body.appendChild(heart);
+        setTimeout(() => { heart.remove(); }, 800);
+      });
+      window.hasHeartInit = true;
+    };
+
+    // 首次运行
+    initAnimation();
+    initProgress();
+    initHeart();
+
+    // 适配 Pjax：当页面切换完成后重新触发动画和进度条
+    document.addEventListener('pjax:complete', () => {
+      initAnimation();
+      initProgress();
     });
   })();
 </script>
