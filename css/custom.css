@@ -199,6 +199,21 @@ button:hover,
         filter: none;
     }
 }
+/* Butterfly 首页文章卡片初始状态 */
+#recent-posts > .recent-post-item {
+    opacity: 0;
+    /* scale(0.8) 模拟从中心向四周扩散的效果 */
+    transform: scale(0.8) translateY(40px);
+    /* 使用极致丝滑的贝塞尔曲线 */
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    will-change: opacity, transform;
+}
+
+    /* 当滚动到视口时，由 JS 加上 .is-visible 类名 */
+    #recent-posts > .recent-post-item.is-visible {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 
 
 
