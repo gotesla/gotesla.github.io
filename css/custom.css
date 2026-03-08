@@ -73,24 +73,29 @@
     -webkit-backdrop-filter: blur(15px) !important;
     border-radius: 12px !important;
 }
-/* 自定义跟随圆环的样式 */
-#cursor {
-    position: fixed;
-    width: 6px; /* 中间实心点 */
-    height: 6px;
-    background: #222; /* 深色 */
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
+/* --- 极简高级感鼠标 --- */
+
+/* 1. 强制隐藏系统默认丑箭头 */
+html, body, a, button {
+    cursor: none !important;
 }
 
-#cursor-outer {
+/* 2. 定义那个精致的小点 */
+#cursor-dot {
     position: fixed;
-    width: 28px; /* 外部跟随圆圈 */
-    height: 28px;
-    border: 1.5px solid rgba(0, 0, 0, 0.3); /* 半透明圆环 */
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.6); /* 深灰色，不沉闷 */
     border-radius: 50%;
     pointer-events: none;
-    transition: all 0.1s ease-out; /* 关键：这决定了拖尾的丝滑度 */
-    z-index: 9998;
+    z-index: 999999;
+    transition: transform 0.2s ease-out, background 0.2s ease-out; /* 关键：呼吸感动画 */
 }
+
+/* 3. 悬停到链接时的“放大呼吸”效果 */
+.cursor-hover {
+    transform: scale(4); /* 放大 4 倍变成一个大圆环 */
+    background: rgba(0, 0, 0, 0.1) !important; /* 变得非常透，高级感来源 */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
