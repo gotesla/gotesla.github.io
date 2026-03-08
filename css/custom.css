@@ -16,3 +16,5 @@
     /* 柔和的阴影 */
     box-shadow: 0 8px 16px rgba(0,0,0,0.05) !important;
 }
+background: rgba(255, 255, 255, 0.7) !important;
+backdrop-filter: blur(10px) !important;
