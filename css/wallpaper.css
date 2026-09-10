@@ -1,12 +1,10 @@
-/* Orbital Earth background — NASA ISS028, source in /media/README.md */
+/* User-selected sunset wallpaper, restored with imagegen. */
 #web_bg {
-  background: #030913 url('/media/earth-orbit.jpg') center / cover no-repeat !important;
+  background: #080c14 url('/media/sunset-clean.png') center / cover no-repeat !important;
   inset: 0; overflow: hidden; pointer-events: none;
   animation: none !important;
 }
-#web_bg video { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s; }
-#web_bg video.is-playing { opacity: 1; }
-#web_bg::after { content: ''; position: absolute; inset: 0; background: rgba(2, 9, 22, .22); }
+#web_bg::after { content: ''; position: absolute; inset: 0; background: rgba(2, 9, 22, .04); }
 #page-header { background: transparent !important; }
 #page-header::before { background: transparent !important; }
 #site-title, #site-subtitle { text-shadow: 0 2px 18px #000, 0 1px 4px #000; }
@@ -29,9 +27,8 @@
 [data-theme='dark'] #recent-posts > .recent-post-item,
 [data-theme='dark'] .layout > div:first-child:not(.recent-posts) { background: rgba(9, 20, 39, .88) !important; }
 #article-container { font-size: 16px; }
-.earth-credit { font-size: 12px; margin-top: 8px; color: #c5d3e5; }
-@media (max-width: 767px), (prefers-reduced-motion: reduce) {
-  #web_bg video { display: none; }
+@media (max-width: 767px) {
+  #web_bg { background-position: 58% center !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   #recent-posts > .recent-post-item, .animate-item { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
