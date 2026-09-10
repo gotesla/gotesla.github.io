@@ -402,23 +402,23 @@ void rotate(int* nums, int numsSize, int k) {
 <h2 id="_4">二、当天的四道题与我的作答</h2>
 <p>下面按截图转录题干、选项和作答记录。先尝试独立判断，再查看下一部分的解析。未提供的原始选择不补写。</p>
 <h3 id="1-leetcode-189">1. LeetCode 189：轮转数组</h3>
-<p><strong>题干：</strong>给定一个整数数组 nums，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。</p>
+<p><strong>题干：</strong> 给定一个整数数组 nums，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。</p>
 <pre><code class="language-text">示例 1：nums = [1,2,3,4,5,6,7]，k = 3
 输出：[5,6,7,1,2,3,4]
 示例 2：nums = [-1,-100,3,99]，k = 2
 输出：[3,99,-1,-100]
 </code></pre>
 <p>截图中的约束：数组长度为 1 到 10⁵，元素为 32 位有符号整数，0 ≤ k ≤ 10⁵。</p>
-<p><strong>我的作答：</strong>采用三次反转法。最初提交时，以下三行中有两个错误（这里特意保留错误，不能直接作为正确答案使用）：</p>
+<p><strong>我的作答：</strong> 采用三次反转法。最初提交时，以下三行中有两个错误（这里特意保留错误，不能直接作为正确答案使用）：</p>
 <pre><code class="language-c">reverse(nums, 0, numsSize - 1): // 错误：末尾是冒号
 reverse(nums, 0, k - 1);
 reverse(nums, k, numsSize);     // 错误：右端下标越界
 </code></pre>
-<p><strong>作答记录：</strong>当天保存的修改后提交截图如下。完整正确代码见前面的知识点部分。</p>
+<p><strong>作答记录：</strong> 当天保存的修改后提交截图如下。完整正确代码见前面的知识点部分。</p>
 <p><img alt="原始记录：轮转数组修改后通过，右侧为我的代码" src="images/06-rotate-result.png"/></p>
 <p><em>原始截图 A：来自本人当天 17:01 保存的轮转数组提交页面，展示修改后的代码及“通过”状态。平台耗时仅是这次测量值，不能用来代替复杂度分析。</em></p>
 <h3 id="2">2. 阶乘递归的时间复杂度</h3>
-<p><strong>题干：</strong>下面算法的时间复杂度是（ ）。</p>
+<p><strong>题干：</strong> 下面算法的时间复杂度是（ ）。</p>
 <pre><code class="language-c">int f(unsigned int n) {
     if (n == 0 || n == 1)
         return 1;
@@ -482,7 +482,7 @@ reverse(nums, k, numsSize);     // 错误：右端下标越界
 </table>
 <p><strong>我的答案：D。</strong></p>
 <h3 id="4_1">4. 有序数组中最接近目标的两数之和</h3>
-<p><strong>题干：</strong>给定一个整数 sum，从有 N 个有序元素的数组中寻找元素 a、b，使得 a+b 的结果最接近 sum，最快的平均时间复杂度是（ ）。</p>
+<p><strong>题干：</strong> 给定一个整数 sum，从有 N 个有序元素的数组中寻找元素 a、b，使得 a+b 的结果最接近 sum，最快的平均时间复杂度是（ ）。</p>
 <table>
 <thead>
 <tr>
@@ -512,39 +512,39 @@ reverse(nums, k, numsSize);     // 错误：右端下标越界
 <p><strong>我的答案：D。</strong> 截图中 D 被选中，我随后问：“为什么不用二分查找，不是时间复杂度更低吗？”</p>
 <h2 id="_5">三、逐题讲解与易错点</h2>
 <h3 id="1_1">第 1 题：轮转数组</h3>
-<p><strong>正确思路：</strong>先把 k 对数组长度取余，然后整体反转、反转前 k 个、反转剩余部分。以 [1,2,3,4,5,6,7]、k=3 为例：</p>
+<p><strong>正确思路：</strong> 先把 k 对数组长度取余，然后整体反转、反转前 k 个、反转剩余部分。以 [1,2,3,4,5,6,7]、k=3 为例：</p>
 <pre><code class="language-text">整体反转：7 6 5 4 3 2 1
 前段反转：5 6 7 4 3 2 1
 后段反转：5 6 7 1 2 3 4
 </code></pre>
-<p><strong>我的错误和改法：</strong>第一条调用末尾的冒号改成分号，最后一条调用的 numsSize 改成 numsSize−1。</p>
+<p><strong>我的错误和改法：</strong> 第一条调用末尾的冒号改成分号，最后一条调用的 numsSize 改成 numsSize−1。</p>
 <pre><code class="language-c">reverse(nums, 0, numsSize - 1);
 reverse(nums, 0, k - 1);
 reverse(nums, k, numsSize - 1);
 </code></pre>
-<p><strong>复杂度：</strong>三次反转都是线性工作，加起来仍为 O(n)；辅助变量数量固定，额外空间 O(1)。</p>
-<p><strong>易错点：</strong>把长度当成末尾下标；把前 k 个误写成 [0,k]；忘记 k 可以大于长度；认为 void 函数不能把结果交给调用者。这里答案通过修改原数组交出，return 只结束函数。</p>
-<p><strong>复习口诀：</strong>整体、前段、后段；末尾下标记得减 1。</p>
+<p><strong>复杂度：</strong> 三次反转都是线性工作，加起来仍为 O(n)；辅助变量数量固定，额外空间 O(1)。</p>
+<p><strong>易错点：</strong> 把长度当成末尾下标；把前 k 个误写成 [0,k]；忘记 k 可以大于长度；认为 void 函数不能把结果交给调用者。这里答案通过修改原数组交出，return 只结束函数。</p>
+<p><strong>复习口诀：</strong> 整体、前段、后段；末尾下标记得减 1。</p>
 <h3 id="2_1">第 2 题：阶乘递归</h3>
 <p><strong>正确答案：A，O(n)。</strong></p>
 <p>f(4) 依次调用 f(3)、f(2)、f(1)，达到终止条件后逐层返回。一般地，每次只把 n 减 1，所以有约 n 层调用，每层常数工作。</p>
 <pre><code class="language-text">T(n) = T(n−1) + O(1) = O(n)
 </code></pre>
-<p><strong>易错点：</strong>递归不自动等于 O(log n)；“每次减 1”和“每次减半”不同；结果 n! 也不是执行次数。递归调用还占用 O(n) 栈空间。</p>
-<p><strong>复习口诀：</strong>先数层数，再看每层工作和分支数。</p>
+<p><strong>易错点：</strong> 递归不自动等于 O(log n)；“每次减 1”和“每次减半”不同；结果 n! 也不是执行次数。递归调用还占用 O(n) 栈空间。</p>
+<p><strong>复习口诀：</strong> 先数层数，再看每层工作和分支数。</p>
 <h3 id="3-o_1">第 3 题：大 O 表示法</h3>
 <p><strong>我的选择：D。题目答案：C。</strong> 题目问的是“错误”的说法。</p>
 <p>C 说会保留一个系数，但常用化简会忽略常数系数和低阶项：3n²+5n+10 通常写作 O(n²)，不是为了精确表示次数而保留 3。</p>
-<p><strong>D 为什么不作为本题答案？</strong>课程中常默认分析最坏情况，因此“一般表示最差运行时间”被视为正确。不过严格定义中，大 O 是增长上界，不等同于最坏情况。选择题应看清它的课程语境，同时保留这个概念区别。</p>
-<p><strong>易错点：</strong>漏看“错误的是”；把大 O 当成精确时间；把“上界”和“最坏情况”混为一谈。常数被忽略不表示它对实际速度没有影响。</p>
-<p><strong>复习口诀：</strong>最高阶、去系数；场景与上界分开看。</p>
+<p><strong>D 为什么不作为本题答案？</strong> 课程中常默认分析最坏情况，因此“一般表示最差运行时间”被视为正确。不过严格定义中，大 O 是增长上界，不等同于最坏情况。选择题应看清它的课程语境，同时保留这个概念区别。</p>
+<p><strong>易错点：</strong> 漏看“错误的是”；把大 O 当成精确时间；把“上界”和“最坏情况”混为一谈。常数被忽略不表示它对实际速度没有影响。</p>
+<p><strong>复习口诀：</strong> 最高阶、去系数；场景与上界分开看。</p>
 <h3 id="4_2">第 4 题：最接近目标的两数之和</h3>
 <p><strong>我的选择：D，O(log n)。正确答案：A，O(n)。</strong></p>
 <p>单次二分只能解决“固定 a 后，寻找 b”的子问题。a 还没确定，需要枚举各个 a，因此反复二分的完整过程为 O(n log n)。</p>
 <p>双指针从最小值和最大值开始。每次先记录当前差值，和偏小就移动左指针，和偏大就移动右指针，恰好等于目标就结束。每一步排除一个端点，最多移动 n−1 次，所以整体 O(n)。</p>
-<p><strong>排除依据：</strong>和偏大时，当前右端元素与更大的左端候选相加只会更大，所以记录当前组合后可以排除右端；和偏小时同理排除左端。这个推理依赖数组有序。</p>
-<p><strong>易错点：</strong>只计算一次二分的时间；只找“恰好相等”而忘记记录最接近值；指针相遇后重复使用同一个位置；忘记两数之和可能溢出。如果数组无序，先排序的代价也必须计入总时间。</p>
-<p><strong>复习口诀：</strong>小了左边向右，大了右边向左；每次比较差值，两个位置不能相同。</p>
+<p><strong>排除依据：</strong> 和偏大时，当前右端元素与更大的左端候选相加只会更大，所以记录当前组合后可以排除右端；和偏小时同理排除左端。这个推理依赖数组有序。</p>
+<p><strong>易错点：</strong> 只计算一次二分的时间；只找“恰好相等”而忘记记录最接近值；指针相遇后重复使用同一个位置；忘记两数之和可能溢出。如果数组无序，先排序的代价也必须计入总时间。</p>
+<p><strong>复习口诀：</strong> 小了左边向右，大了右边向左；每次比较差值，两个位置不能相同。</p>
 <h2 id="_6">四、复习自测</h2>
 <ol>
 <li>长度为 7，右移 10 次，真正要移动几次？</li>
@@ -568,7 +568,7 @@ reverse(nums, k, numsSize - 1);
 <li>二分需要重复约 n 次，总体 O(n log n)；有序数组双指针整体 O(n)。</li>
 </ol>
 <hr/>
-<p><strong>图片备注：</strong>图 1 至图 5 根据当天学习内容重新绘制，用于说明算法与易错点；原始截图 A 来自当天保存的轮转数组提交页面。文字依据本人提问与作答记录整理，并借助 AI 辅助组织和绘图。</p></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://gotesla.github.io/">chengs</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://gotesla.github.io/2026/09/10/c-algorithms-notes/">https://gotesla.github.io/2026/09/10/c-algorithms-notes/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://gotesla.github.io/" target="_blank">chengs的妙妙屋</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/2026/09/10/c-algorithms-notes/images/01-rotate.png" data-sites="facebook,x,wechat,weibo,qq"></div><link href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'" rel="stylesheet"/><script defer="" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Giscus</span><span id="switch-btn"></span><span class="second-comment">Twikoo</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img alt="avatar" onerror="this.onerror=null;this.src='/img/friend_404.gif'" src="/img/Giselle3.jpg"/></div><div class="author-info-name">chengs</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a href="https://github.com/xxxxxx" id="card-info-btn" rel="noopener" target="_blank"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#_1">一、先学知识点</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0">0. 如何分析时间与空间复杂度</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1">1. 数组、反转与轮转</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-return">2. 函数调用与 return</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3">3. 元素个数、下标与闭区间</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_3">易错点单图复习</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4">4. 递归与时间复杂度</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-o">5. 大 O 表示法与复杂度化简</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6">6. 二分查找和双指针的适用方式</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_4">二、当天的四道题与我的作答</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-leetcode-189">1. LeetCode 189：轮转数组</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2">2. 阶乘递归的时间复杂度</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-o">3. 关于大 O 表示法，说法错误的是</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4_1">4. 有序数组中最接近目标的两数之和</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_5">三、逐题讲解与易错点</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1_1">第 1 题：轮转数组</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2_1">第 2 题：阶乘递归</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-o_1">第 3 题：大 O 表示法</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4_2">第 4 题：最接近目标的两数之和</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_6">四、复习自测</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_7">自测答案</a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/10/c-algorithms-notes/" title="从知识点到错题复盘：C 语言数组、递归与时间复杂度">从知识点到错题复盘：C 语言数组、递归与时间复杂度</a><time datetime="2026-09-10" title="发表于 2026-09-10">2026-09-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/07/hello-world/" title="Hello World">Hello World</a><time datetime="2026-03-07T09:49:45.269Z" title="发表于 2026-03-07 17:49:45">2026-03-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">© 2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a href="https://hexo.io" rel="noopener" target="_blank">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" rel="noopener" target="_blank">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式" type="button"><i class="fas fa-book-open"></i></button><button id="darkmode" title="日间和夜间模式切换" type="button"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" title="单栏和双栏切换" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" title="设置" type="button"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" title="目录" type="button"><i class="fas fa-list-ul"></i></button><a href="#post-comment" id="to_comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" title="回到顶部" type="button"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"><script>(() => {
+<p><strong>图片备注：</strong> 图 1 至图 5 根据当天学习内容重新绘制，用于说明算法与易错点；原始截图 A 来自当天保存的轮转数组提交页面。文字依据本人提问与作答记录整理，并借助 AI 辅助组织和绘图。</p></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://gotesla.github.io/">chengs</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://gotesla.github.io/2026/09/10/c-algorithms-notes/">https://gotesla.github.io/2026/09/10/c-algorithms-notes/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://gotesla.github.io/" target="_blank">chengs的妙妙屋</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/2026/09/10/c-algorithms-notes/images/01-rotate.png" data-sites="facebook,x,wechat,weibo,qq"></div><link href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'" rel="stylesheet"/><script defer="" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Giscus</span><span id="switch-btn"></span><span class="second-comment">Twikoo</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img alt="avatar" onerror="this.onerror=null;this.src='/img/friend_404.gif'" src="/img/Giselle3.jpg"/></div><div class="author-info-name">chengs</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a href="https://github.com/xxxxxx" id="card-info-btn" rel="noopener" target="_blank"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#_1">一、先学知识点</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0">0. 如何分析时间与空间复杂度</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1">1. 数组、反转与轮转</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-return">2. 函数调用与 return</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3">3. 元素个数、下标与闭区间</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_3">易错点单图复习</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4">4. 递归与时间复杂度</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-o">5. 大 O 表示法与复杂度化简</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6">6. 二分查找和双指针的适用方式</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_4">二、当天的四道题与我的作答</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-leetcode-189">1. LeetCode 189：轮转数组</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2">2. 阶乘递归的时间复杂度</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-o">3. 关于大 O 表示法，说法错误的是</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4_1">4. 有序数组中最接近目标的两数之和</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_5">三、逐题讲解与易错点</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1_1">第 1 题：轮转数组</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2_1">第 2 题：阶乘递归</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-o_1">第 3 题：大 O 表示法</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4_2">第 4 题：最接近目标的两数之和</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_6">四、复习自测</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_7">自测答案</a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/10/c-algorithms-notes/" title="从知识点到错题复盘：C 语言数组、递归与时间复杂度">从知识点到错题复盘：C 语言数组、递归与时间复杂度</a><time datetime="2026-09-10" title="发表于 2026-09-10">2026-09-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/07/hello-world/" title="Hello World">Hello World</a><time datetime="2026-03-07T09:49:45.269Z" title="发表于 2026-03-07 17:49:45">2026-03-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">© 2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a href="https://hexo.io" rel="noopener" target="_blank">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" rel="noopener" target="_blank">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式" type="button"><i class="fas fa-book-open"></i></button><button id="darkmode" title="日间和夜间模式切换" type="button"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" title="单栏和双栏切换" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" title="设置" type="button"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" title="目录" type="button"><i class="fas fa-list-ul"></i></button><a href="#post-comment" id="to_comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" title="回到顶部" type="button"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"><script>(() => {
   const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
   const option = null
 
