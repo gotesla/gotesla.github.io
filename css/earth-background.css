@@ -1,0 +1,38 @@
+/* Orbital Earth background — NASA ISS028, source in /media/README.md */
+#web_bg {
+  background: #030913 url('/media/earth-orbit.jpg') center / cover no-repeat !important;
+  inset: 0; overflow: hidden; pointer-events: none;
+  animation: none !important;
+}
+#web_bg video { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s; }
+#web_bg video.is-playing { opacity: 1; }
+#web_bg::after { content: ''; position: absolute; inset: 0; background: rgba(2, 9, 22, .22); }
+#page-header { background: transparent !important; }
+#page-header::before { background: transparent !important; }
+#site-title, #site-subtitle { text-shadow: 0 2px 18px #000, 0 1px 4px #000; }
+/* Opaque enough to read across bright city lights. */
+#aside-content .card-widget,
+#content-inner .recent-post-item,
+#recent-posts > .recent-post-item,
+.layout > div:first-child:not(.recent-posts) {
+  background: rgba(245, 249, 255, .88) !important;
+  backdrop-filter: blur(16px) !important; -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(192, 218, 255, .4) !important;
+  box-shadow: 0 12px 40px rgba(0, 8, 24, .25) !important;
+}
+#aside-content .card-widget:hover,
+#recent-posts > .recent-post-item:hover { background: rgba(245, 249, 255, .95) !important; }
+#nav, #footer { background: rgba(4, 13, 29, .68) !important; border-color: rgba(180, 210, 255, .18) !important; }
+#nav, #nav a, #nav .site-name, #footer, #footer a { color: #eef6ff !important; }
+[data-theme='dark'] #aside-content .card-widget,
+[data-theme='dark'] #content-inner .recent-post-item,
+[data-theme='dark'] #recent-posts > .recent-post-item,
+[data-theme='dark'] .layout > div:first-child:not(.recent-posts) { background: rgba(9, 20, 39, .88) !important; }
+#article-container { font-size: 16px; }
+.earth-credit { font-size: 12px; margin-top: 8px; color: #c5d3e5; }
+@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+  #web_bg video { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #recent-posts > .recent-post-item, .animate-item { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
+}
