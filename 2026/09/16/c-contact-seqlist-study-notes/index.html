@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+
+<html data-theme="light" lang="zh-CN"><head><meta charset="utf-8"/><meta content="IE=edge" http-equiv="X-UA-Compatible"/><meta content="width=device-width, initial-scale=1.0,viewport-fit=cover" name="viewport"/><title>C语言动态顺序表实现通讯录：从类型别名、指针到多文件编译 | chengs的妙妙屋</title><meta content="chengs" name="author"/><meta content="chengs" name="copyright"/><meta content="telephone=no" name="format-detection"/><meta content="#ffffff" name="theme-color"/><meta content="记录用动态顺序表实现通讯录时真正卡住的问题：size 与 capacity、typedef、前置声明、不完整类型、&con 与 con、enum、多文件编译和真实语法错误，并附五个文件的完整代码与高清代码图片。" name="description"/>
+<meta content="article" property="og:type"/>
+<meta content="C语言动态顺序表实现通讯录：从类型别名、指针到多文件编译" property="og:title"/>
+<meta content="https://gotesla.github.io/2026/09/16/c-contact-seqlist-study-notes/" property="og:url"/>
+<meta content="chengs的妙妙屋" property="og:site_name"/>
+<meta content="记录用动态顺序表实现通讯录时真正卡住的问题：size 与 capacity、typedef、前置声明、不完整类型、&con 与 con、enum、多文件编译和真实语法错误，并附五个文件的完整代码与高清代码图片。" property="og:description"/>
+<meta content="zh_CN" property="og:locale"/>
+<meta content="https://gotesla.github.io/2026/09/16/c-contact-seqlist-study-notes/images/code/contact-h.png" property="og:image"/>
+<meta content="2026-09-16T14:45:00+08:00" property="article:published_time"/>
+<meta content="2026-09-16T14:45:00+08:00" property="article:modified_time"/>
+<meta content="chengs" property="article:author"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="https://gotesla.github.io/2026/09/16/c-contact-seqlist-study-notes/images/code/contact-h.png" name="twitter:image"/><link href="/img/favicon.png" rel="shortcut icon"/><link href="https://gotesla.github.io/2026/09/16/c-contact-seqlist-study-notes/" rel="canonical"/><link href="//cdn.jsdelivr.net" rel="preconnect"/><link href="//busuanzi.ibruce.info" rel="preconnect"/><link href="/css/index.css?v=5.5.4" rel="stylesheet"/><link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css" rel="stylesheet"/><script>
+    (() => {
+
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+
+
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+
+
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+
+
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {"title": "C语言动态顺序表实现通讯录：从类型别名、指针到多文件编译", "isHighlightShrink": false, "isToc": true, "pageType": "post"}</script><link href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" rel="stylesheet"/><link href="/css/custom.css" rel="stylesheet"/><style>
+  /* 1. 进度条保持 */
+  #read-progress {
+    position: fixed; top: 0; left: 0; width: 0; height: 3px;
+    background: #ff6b81; z-index: 10000; transition: width 0.2s ease-out;
+  }
+
+  /* 2. 初始状态：给所有目标加一个统一的动画基础类 */
+  .animate-item {
+    opacity: 0 !important;
+    transform: scale(0.9) translateY(40px) !important;
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    will-change: opacity, transform;
+  }
+
+  /* 3. 激活状态 */
+  .animate-item.is-visible {
+    opacity: 1 !important;
+    transform: scale(1) translateY(0) !important;
+  }
+
+  /* 4. 点击爱心 */
+  .click-heart {
+    position: fixed; z-index: 9999; pointer-events: none;
+    color: #ff6b81; font-size: 20px;
+    animation: heart-float 0.8s ease-out forwards;
+  }
+  @keyframes heart-float {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.6) rotate(15deg); }
+  }
+  /* 播放器强制显形 */
+  .aplayer.aplayer-fixed {
+    z-index: 999999 !important;
+    display: block !important;
+    bottom: 20px !important;
+    left: 20px !important;
+  }
+</style>
+<meta content="Hexo 8.1.1" name="generator"/><style>#article-container pre{overflow-x:auto;padding:18px;border-radius:10px;background:#f4f6fa;color:#18243a;line-height:1.65} #article-container img{max-width:100%;height:auto;border-radius:10px} #article-container p:has(>em:only-child){font-size:.9em;color:#65718a}</style><link href="/css/wallpaper.css?v=20260910b" rel="stylesheet"/></head><body><div aria-hidden="true" id="web_bg"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">chengs的妙妙屋</span></a><a class="nav-page-title" href="/"><span class="site-name">从知识点到错题复盘：C 语言数组、递归与时间复杂度</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">C语言动态顺序表实现通讯录：从类型别名、指针到多文件编译</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-09-16T14:45:00+08:00" title="2026-09-16">2026-09-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-09-16T14:45:00+08:00" title="2026-09-16">2026-09-16</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" data-flag-title="" id=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>学习日期：2026 年 9 月 16 日。本文面向刚学完结构体、指针和动态内存的 C 语言初学者，记录我用动态顺序表实现通讯录时真正卡住的问题。正文先讲错误和理解过程，最后保留五个文件的完整代码、完整代码图片以及考前速记。</p>
+</blockquote>
+<p>这次练习不是简单地把联系人放进数组。我真正容易混淆的是：<code>size</code> 和 <code>capacity</code> 各管什么，<code>typedef</code> 到底有没有创建新结构体，为什么前置声明以后仍然不能写 <code>con-&gt;size</code>，以及函数调用时到底该传 <code>con</code> 还是 <code>&amp;con</code>。</p>
+<p>下面所有解释都围绕这次通讯录项目展开，不堆脱离代码的概念。</p>
+<hr>
+<h2 id="section-1">一、先看项目由哪五个文件组成</h2>
+<p>这个通讯录已经是一个多文件程序：通讯录负责业务，顺序表负责底层存储，<code>test.c</code> 负责菜单和程序入口。</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>主要职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>contact.h</code></td>
+<td>定义联系人类型、前置声明通讯录类型、声明通讯录接口</td>
+</tr>
+<tr>
+<td><code>contact.c</code></td>
+<td>实现添加、删除、查找、修改、展示等通讯录业务</td>
+</tr>
+<tr>
+<td><code>seqlist.h</code></td>
+<td>定义动态顺序表结构，声明顺序表接口</td>
+</tr>
+<tr>
+<td><code>seqlist.c</code></td>
+<td>实现初始化、扩容、尾插、删除和销毁</td>
+</tr>
+<tr>
+<td><code>test.c</code></td>
+<td>提供 <code>main</code>、菜单、<code>enum</code> 和 <code>switch</code></td>
+</tr>
+</tbody></table>
+<p>调用关系可以先记成：</p>
+<pre><code class="language-text">test.c
+  │ 调用 AddContact、DelContact……
+  ▼
+contact.c
+  │ 调用 SLPushBack、SLErase……
+  ▼
+seqlist.c
+</code></pre>
+<p>再换一种说法：</p>
+<pre><code class="language-text">菜单层        test.c
+业务层        contact.c
+数据结构层    seqlist.c
+</code></pre>
+<p>这样分文件的好处是：以后把菜单改漂亮，不需要改顺序表；以后给顺序表增加功能，也不必重写菜单。</p>
+<hr>
+<h2 id="section-2">二、动态顺序表基础：<code>size</code> 和 <code>capacity</code> 不是一回事</h2>
+<p>顺序表的核心结构是：</p>
+<pre><code class="language-c">struct SeqList
+{
+    SLDataType* arr;
+    int size;
+    int capacity;
+};
+</code></pre>
+<p>三个成员分别表示：</p>
+<ul>
+<li><code>arr</code>：指向动态申请的联系人数组。</li>
+<li><code>size</code>：当前有多少个<strong>有效联系人</strong>。</li>
+<li><code>capacity</code>：当前申请的空间最多能装多少个联系人。</li>
+</ul>
+<p>例如：</p>
+<pre><code class="language-text">size = 3，capacity = 4
+
+下标：       0           1           2           3
+          ┌────────┬────────┬────────┬────────┐
+arr  ───&gt; │ 张三   │ 李四   │ 王五   │ 未使用 │
+          └────────┴────────┴────────┴────────┘
+            有效       有效       有效      无效
+          └──────── size = 3 ────────┘
+          └────────── capacity = 4 ───────────┘
+</code></pre>
+<p>这里虽然一共有 4 个位置，但通讯录中只有 3 个联系人。程序只能把下标 <code>0</code> 到 <code>size - 1</code> 当作有效数据。</p>
+<h3 id="section-3">我当时为什么容易理解错</h3>
+<p>我容易把“申请了多少空间”和“已经存了多少数据”当成同一个数。实际上：</p>
+<pre><code class="language-text">capacity 管空间
+size     管有效数据
+</code></pre>
+<h3 id="section-4">错误写法 → 为什么错 → 正确理解 → 以后怎么判断</h3>
+<p><strong>错误理解：</strong> <code>capacity = 4</code> 就表示已经有 4 个联系人。</p>
+<p><strong>为什么错：</strong> <code>capacity</code> 只表示空间上限，未使用的位置可能是旧数据，也可能是未初始化内容。</p>
+<p><strong>正确理解：</strong> 是否属于顺序表，只看下标是否满足 <code>0 &lt;= 下标 &lt; size</code>。</p>
+<p><strong>以后怎么判断：</strong> 遍历时永远写 <code>i &lt; size</code>，不要写 <code>i &lt; capacity</code>。</p>
+<hr>
+<h2 id="section-5">三、<code>DEFAULT_CAPACITY 4</code> 和 4、8、16、32 扩容</h2>
+<p>项目中写了：</p>
+<pre><code class="language-c">#define DEFAULT_CAPACITY 4
+</code></pre>
+<p>这里的 <code>4</code> 表示：顺序表第一次需要存数据时，先申请能放下 <strong>4 个 <code>SLDataType</code> 元素</strong>的空间。因为本项目中 <code>SLDataType</code> 是 <code>PeoInfo</code> 的别名，所以第一次申请的是 4 个联系人结构体的位置，不是 4 个字节。</p>
+<p>初始化时并没有马上申请数组：</p>
+<pre><code class="language-text">初始化后：arr = NULL，size = 0，capacity = 0
+第一次添加：申请 4 个 PeoInfo 的空间
+</code></pre>
+<p>扩容判断是：</p>
+<pre><code class="language-c">if (ps-&gt;size == ps-&gt;capacity)
+</code></pre>
+<p>当有效数据数量已经等于容量时，说明下一次插入前必须扩容：</p>
+<pre><code class="language-text">容量变化：0 → 4 → 8 → 16 → 32 → ……
+</code></pre>
+<p>对应代码：</p>
+<pre><code class="language-c">int newcapacity = ps-&gt;size == 0
+                ? DEFAULT_CAPACITY
+                : ps-&gt;capacity * 2;
+</code></pre>
+<p>第一次容量为 0，所以取 <code>DEFAULT_CAPACITY</code>，得到 4；之后每次乘 2。</p>
+<h3 id="section-6">为什么不每次只增加 1</h3>
+<p>如果每插入一个联系人就重新申请一次空间，程序会频繁搬家，效率很低。按 2 倍扩容可以减少 <code>realloc</code> 的调用次数，同时规则也容易理解。</p>
+<hr>
+<h2 id="section-7">四、<code>realloc</code> 做什么，为什么必须用 <code>tmp</code> 接收</h2>
+<p>扩容代码是：</p>
+<pre><code class="language-c">SLDataType* tmp = (SLDataType*)realloc(
+    ps-&gt;arr,
+    sizeof(SLDataType) * newcapacity
+);
+</code></pre>
+<p><code>realloc</code> 会调整原来那块动态内存的大小。它可能出现三种情况：</p>
+<ol>
+<li>原地扩大，返回的地址和原来相同。</li>
+<li>原地放不下，申请一块更大的新空间，把旧数据搬过去，再返回新地址。</li>
+<li>申请失败，返回 <code>NULL</code>，原来的内存仍然有效。</li>
+</ol>
+<p>示意图：</p>
+<pre><code class="language-text">扩容前
+ps-&gt;arr ───&gt; [联系人0][联系人1][联系人2][联系人3]
+
+可能原地扩大
+ps-&gt;arr ───&gt; [0][1][2][3][空][空][空][空]
+
+也可能换地址
+旧地址：      [0][1][2][3]             （随后由 realloc 处理）
+新地址 tmp ─&gt; [0][1][2][3][空][空][空][空]
+</code></pre>
+<h3 id="section-8">错误写法</h3>
+<pre><code class="language-c">ps-&gt;arr = realloc(ps-&gt;arr, sizeof(SLDataType) * newcapacity);
+</code></pre>
+<h3 id="section-9">为什么错</h3>
+<p>如果 <code>realloc</code> 失败，它返回 <code>NULL</code>。直接赋给 <code>ps-&gt;arr</code> 会覆盖原来的地址，以后既找不到旧数据，也无法 <code>free</code> 原空间，造成内存泄漏。</p>
+<h3 id="section-10">正确写法</h3>
+<pre><code class="language-c">SLDataType* tmp = (SLDataType*)realloc(
+    ps-&gt;arr,
+    sizeof(SLDataType) * newcapacity
+);
+
+if (tmp == NULL)
+{
+    perror(&quot;realloc fail&quot;);
+    exit(EXIT_FAILURE);
+}
+
+ps-&gt;arr = tmp;
+ps-&gt;capacity = newcapacity;
+</code></pre>
+<h3 id="section-11">以后怎么判断</h3>
+<p>凡是一个函数“失败时可能返回 <code>NULL</code>，而原指针仍然重要”，就不要急着覆盖原指针。先用临时指针接收，检查成功后再赋值。</p>
+<hr>
+<h2 id="section-12">五、删除以后为什么还能看到旧数据</h2>
+<p>假设顺序表中有 4 个联系人：</p>
+<pre><code class="language-text">size = 4
+
+下标：  0      1      2      3
+      [张三] [李四] [王五] [赵六]
+</code></pre>
+<p>删除下标 1 的李四，需要把后面的数据依次向前覆盖：</p>
+<pre><code class="language-text">移动后、size-- 前：
+
+下标：  0      1      2      3
+      [张三] [王五] [赵六] [赵六]
+</code></pre>
+<p>最后执行：</p>
+<pre><code class="language-c">ps-&gt;size--;
+</code></pre>
+<p>此时：</p>
+<pre><code class="language-text">size = 3
+
+有效范围：下标 0、1、2
+下标 3 虽然还看得到旧的“赵六”，但它已经不属于顺序表。
+</code></pre>
+<h3 id="section-13">错误理解 → 为什么错 → 正确理解 → 以后怎么判断</h3>
+<p><strong>错误理解：</strong> 最后一个位置还有旧值，所以删除失败了。</p>
+<p><strong>为什么错：</strong> 顺序表的有效范围由 <code>size</code> 决定，不由内存里“看起来有没有值”决定。</p>
+<p><strong>正确理解：</strong> <code>size--</code> 后，下标 <code>size</code> 及其后面的空间都不再是有效元素。</p>
+<p><strong>以后怎么判断：</strong> 只遍历 <code>0</code> 到 <code>size - 1</code>。除非有安全或业务要求，否则删除时没有必要把尾部旧值专门清零。</p>
+<hr>
+<h2 id="section-14">六、<code>free</code> 后为什么还要重置三个成员</h2>
+<p>销毁代码是：</p>
+<pre><code class="language-c">free(ps-&gt;arr);
+ps-&gt;arr = NULL;
+ps-&gt;size = 0;
+ps-&gt;capacity = 0;
+</code></pre>
+<p><code>free(ps-&gt;arr)</code> 只是把动态内存还给系统，并不会自动修改结构体里的三个成员。</p>
+<p>如果只 <code>free</code>，会出现：</p>
+<pre><code class="language-text">ps-&gt;arr      仍保存旧地址，但那个地址已经不能再使用 → 野指针
+ps-&gt;size     仍像是有联系人
+ps-&gt;capacity 仍像是有可用空间
+</code></pre>
+<p>重置后的状态才和“空顺序表”一致：</p>
+<pre><code class="language-text">arr = NULL
+size = 0
+capacity = 0
+</code></pre>
+<h3 id="section-15">以后怎么判断</h3>
+<p>销毁一个动态容器时，要同时处理两件事：</p>
+<ol>
+<li>释放它拥有的动态内存。</li>
+<li>把描述这块内存的状态恢复为空。</li>
+</ol>
+<hr>
+<h2 id="section-16">七、结构体与 <code>typedef</code>：它只起别名，不创建对象</h2>
+<h3 id="section-17">1. 完整结构体定义</h3>
+<pre><code class="language-c">struct SeqList
+{
+    SLDataType* arr;
+    int size;
+    int capacity;
+};
+</code></pre>
+<p>它告诉编译器：<code>struct SeqList</code> 里面依次有一个指针和两个整数。只有看到这个完整定义后，编译器才知道成员名称、成员类型和结构体大小。</p>
+<h3 id="section-18">2. 三种别名分别是什么意思</h3>
+<pre><code class="language-c">typedef struct SeqList SeqList;
+</code></pre>
+<p>给 <code>struct SeqList</code> 起别名 <code>SeqList</code>。以后可以写：</p>
+<pre><code class="language-c">SeqList s;
+</code></pre>
+<pre><code class="language-c">typedef struct SeqList contact;
+</code></pre>
+<p>给同一个 <code>struct SeqList</code> 起别名 <code>contact</code>。在通讯录业务中写 <code>contact con;</code> 更能表达“这是一个通讯录”。</p>
+<pre><code class="language-c">typedef struct SeqList seqlist;
+</code></pre>
+<p>还是给同一个 <code>struct SeqList</code> 起别名，只是这个别名叫 <code>seqlist</code>，方便顺序表底层接口使用。</p>
+<p>可以画成：</p>
+<pre><code class="language-text">                         ┌── SeqList
+struct SeqList  ──别名───┼── contact
+                         └── seqlist
+
+三个名字指向同一种类型，不是三个不同结构体。
+</code></pre>
+<p>本项目实际使用了 <code>contact</code> 和 <code>seqlist</code> 两个别名。<code>SeqList</code> 这个别名写法用来帮助理解，但最终代码中没有再定义它。</p>
+<h3 id="section-19">3. <code>typedef</code> 不会做什么</h3>
+<p><code>typedef</code>：</p>
+<ul>
+<li>不会创建新的结构体类型内容。</li>
+<li>不会创建变量。</li>
+<li>不会申请内存。</li>
+<li>只是在给已有类型起一个更方便的名字。</li>
+</ul>
+<h3 id="section-20">错误理解 → 为什么错 → 正确理解 → 以后怎么判断</h3>
+<p><strong>错误理解：</strong> <code>typedef struct SeqList contact;</code> 创建了一个叫 <code>contact</code> 的通讯录对象。</p>
+<p><strong>为什么错：</strong> 这一行没有变量名，只是在定义类型别名。</p>
+<p><strong>正确理解：</strong> 真正创建变量的是 <code>contact con;</code>。</p>
+<p><strong>以后怎么判断：</strong> 看到 <code>typedef</code>，先把它读成“把前面的类型以后也叫作后面的名字”。</p>
+<hr>
+<h2 id="section-21">八、<code>typedef PeoInfo SLDataType;</code> 为什么能让顺序表存联系人</h2>
+<p><code>contact.h</code> 中先定义联系人：</p>
+<pre><code class="language-c">typedef struct PersonInfo
+{
+    char name[NAME_MAX];
+    char sex[SEX_MAX];
+    char tel[TEL_MAX];
+    char addr[ADDR_MAX];
+} PeoInfo;
+</code></pre>
+<p><code>seqlist.h</code> 中再写：</p>
+<pre><code class="language-c">typedef PeoInfo SLDataType;
+</code></pre>
+<p>所以：</p>
+<pre><code class="language-text">SLDataType             本质上就是 PeoInfo
+SLDataType*            本质上就是 PeoInfo*
+SLDataType* arr        本质上就是 PeoInfo* arr
+</code></pre>
+<p>因此 <code>arr</code> 指向的不是一个联系人，而是一整组连续存放的联系人结构体：</p>
+<pre><code class="language-text">arr
+ │
+ ▼
+┌──────────────┬──────────────┬──────────────┬──────────────┐
+│ PeoInfo [0]  │ PeoInfo [1]  │ PeoInfo [2]  │ PeoInfo [3]  │
+│ 姓名/性别/…  │ 姓名/性别/…  │ 姓名/性别/…  │ 姓名/性别/…  │
+└──────────────┴──────────────┴──────────────┴──────────────┘
+</code></pre>
+<p>访问 <code>con-&gt;arr[i].name</code> 可以分三步理解：</p>
+<pre><code class="language-text">con-&gt;arr     找到联系人数组
+[i]          找到第 i 个 PeoInfo
+.name        访问这个联系人的姓名成员
+</code></pre>
+<p>电话数组写成：</p>
+<pre><code class="language-c">#define TEL_MAX 12
+</code></pre>
+<p>因为 11 位手机号作为 C 字符串存储时，还需要最后一个 <code>\0</code>：</p>
+<pre><code class="language-text">11 个数字 + 1 个字符串结束标志 &#39;\0&#39; = 至少 12 个 char
+</code></pre>
+<hr>
+<h2 id="section-22">九、前置声明与“不完整类型”</h2>
+<p><code>contact.h</code> 中有：</p>
+<pre><code class="language-c">typedef struct SeqList contact;
+</code></pre>
+<p>这一行既起了别名，也可以让编译器先知道：存在一个名叫 <code>struct SeqList</code> 的结构体类型。此时它还不知道结构体内部有什么，所以这叫<strong>不完整类型</strong>。</p>
+<p>在只见过前置声明时，可以声明指针：</p>
+<pre><code class="language-c">contact* con;
+</code></pre>
+<p>因为指针本身的大小是确定的。但是还不能访问成员：</p>
+<pre><code class="language-c">con-&gt;size;
+con-&gt;capacity;
+con-&gt;arr;
+</code></pre>
+<p>编译器必须先看到完整定义：</p>
+<pre><code class="language-c">struct SeqList
+{
+    SLDataType* arr;
+    int size;
+    int capacity;
+};
+</code></pre>
+<p>才知道 <code>size</code>、<code>capacity</code>、<code>arr</code> 在哪里。</p>
+<h3 id="section-23">我实际犯过的大小写错误</h3>
+<p>我曾经混用：</p>
+<pre><code class="language-c">struct SeqList
+struct Seqlist
+struct seqList
+struct seqlist
+</code></pre>
+<p>C 语言严格区分大小写，这四个名称代表四种完全不同的结构体标签。</p>
+<h3 id="section-24">错误写法</h3>
+<pre><code class="language-c">typedef struct SeqList contact;
+
+struct Seqlist
+{
+    SLDataType* arr;
+    int size;
+    int capacity;
+};
+</code></pre>
+<h3 id="section-25">为什么错</h3>
+<p>前置声明说的是 <code>struct SeqList</code>，完整定义写的却是 <code>struct Seqlist</code>。编译器仍然只知道 <code>struct SeqList</code> “存在”，却始终看不到它的内部成员，所以访问 <code>con-&gt;size</code> 时会报不完整类型错误。</p>
+<h3 id="section-26">正确写法</h3>
+<pre><code class="language-c">typedef struct SeqList contact;
+
+struct SeqList
+{
+    SLDataType* arr;
+    int size;
+    int capacity;
+};
+</code></pre>
+<h3 id="section-27">以后怎么判断</h3>
+<p>遇到“不完整类型”时，按这个顺序检查：</p>
+<ol>
+<li>有没有完整的结构体定义。</li>
+<li>使用成员的 <code>.c</code> 文件是否包含了能看到完整定义的头文件。</li>
+<li>前置声明和完整定义的结构体标签是否逐字一致，尤其检查大小写。</li>
+</ol>
+<p>【此处插入图片：VSCode中“不允许使用指向不完整类型 struct SeqList”的报错截图】</p>
+<p><em>图片说明：截取 VSCode 中 <code>con-&gt;size</code> 或 <code>con-&gt;arr</code> 下方红线，以及“指向不完整类型 <code>struct SeqList</code>”的完整报错信息，最好让前置声明和大小写不一致的结构体名同时出现在画面中。</em></p>
+<hr>
+<h2 id="section-28">十、<code>static</code>：当前 <code>.c</code> 文件内部的辅助函数</h2>
+<p>顺序表扩容检查写成：</p>
+<pre><code class="language-c">static void SLCheckCapacity(seqlist* ps)
+</code></pre>
+<p>这里的 <code>static</code> 修饰函数，表示这个函数只在当前 <code>seqlist.c</code> 内部使用。可以把它理解为当前源文件的“私有辅助函数”。</p>
+<p>这样做很合适，因为：</p>
+<ul>
+<li>外部模块不需要主动检查容量。</li>
+<li><code>SLPushBack</code> 在插入前自动调用它。</li>
+<li>不把内部实现细节暴露到 <code>seqlist.h</code>。</li>
+</ul>
+<p><code>contact.c</code> 中的 <code>ReadWord</code>、<code>FindByName</code> 也使用了同样的做法。</p>
+<h3 id="section-29">函数内部的 <code>static</code> 局部变量</h3>
+<p>它和 <code>static</code> 函数不是同一个作用：</p>
+<pre><code class="language-c">void Test(void)
+{
+    int a = 0;          // 每次进入函数都会重新创建和初始化
+    static int b = 0;   // 只初始化一次，下一次调用仍保留上次的值
+}
+</code></pre>
+<p>初学阶段先记住：</p>
+<pre><code class="language-text">static 修饰函数       → 函数只供当前 .c 文件使用
+static 修饰局部变量   → 生命周期持续到程序结束，值会保留
+</code></pre>
+<hr>
+<h2 id="section-30">十一、头文件和源文件怎样配合</h2>
+<p>常见规则是：</p>
+<pre><code class="language-text">.h 文件：放类型、宏、函数声明
+.c 文件：放函数的具体实现
+</code></pre>
+<p>本项目中的依赖关系是：</p>
+<pre><code class="language-text">contact.h
+  ├─ 定义 PeoInfo
+  ├─ 前置声明 struct SeqList
+  └─ 声明通讯录接口
+
+seqlist.h
+  ├─ #include &quot;contact.h&quot;
+  ├─ typedef PeoInfo SLDataType
+  ├─ 完整定义 struct SeqList
+  └─ 声明顺序表接口
+
+contact.c
+  ├─ 使用通讯录接口和 PeoInfo
+  └─ 调用顺序表接口
+</code></pre>
+<h3 id="section-31">为什么自己的 <code>.c</code> 最好直接包含自己的 <code>.h</code></h3>
+<p>规范写法建议：</p>
+<pre><code class="language-c">#include &quot;contact.h&quot;
+#include &quot;seqlist.h&quot;
+</code></pre>
+<p>原因是 <code>contact.c</code> 实现的是 <code>contact.h</code> 中声明的函数，直接包含自己的头文件，可以让编译器及时检查声明与定义是否一致。</p>
+<p>当前最终代码的 <code>contact.c</code> 直接包含了 <code>seqlist.h</code>，而 <code>seqlist.h</code> 又间接包含 <code>contact.h</code>，所以当前代码可以正常编译。但“间接包含”容易随着头文件关系变化而失效。以后写自己的项目，优先让每个 <code>.c</code> 直接包含自己的 <code>.h</code>，再包含它额外依赖的头文件。</p>
+<blockquote>
+<p>这一点是代码组织建议。为了保留本次最终确认版本，文末代码没有擅自改动包含关系。</p>
+</blockquote>
+<hr>
+<h2 id="section-32">十二、重点：到底传 <code>&amp;con</code> 还是传 <code>con</code></h2>
+<h3 id="section-33">1. <code>main</code> 中的 <code>con</code> 是普通结构体变量</h3>
+<pre><code class="language-c">contact con;
+</code></pre>
+<p>此时 <code>con</code> 的类型是 <code>contact</code>，它不是指针。</p>
+<p>函数定义需要的是指针：</p>
+<pre><code class="language-c">void AddContact(contact* con);
+</code></pre>
+<p>所以在 <code>main</code> 中调用时必须传地址：</p>
+<pre><code class="language-c">AddContact(&amp;con);
+</code></pre>
+<p><code>&amp;con</code> 的意思是“取得变量 <code>con</code> 的地址”。</p>
+<pre><code class="language-text">main 中
+
+con（普通结构体变量）
+┌──────────────────────────┐
+│ arr │ size │ capacity    │
+└──────────────────────────┘
+  ▲
+  │ &amp;con：取得它的地址
+  │
+传给 AddContact(contact* con)
+</code></pre>
+<h3 id="section-34">2. 进入函数后，形参 <code>con</code> 已经是指针</h3>
+<pre><code class="language-c">void DelContact(contact* con)
+{
+    int pos = FindByName(con, name);
+    SLErase(con, pos);
+}
+</code></pre>
+<p>函数内部这个 <code>con</code> 的类型已经是 <code>contact*</code>，所以继续传给同样需要指针的函数时，直接传 <code>con</code>。</p>
+<h3 id="section-35">错误写法</h3>
+<pre><code class="language-c">SLErase(&amp;con, pos);
+</code></pre>
+<h3 id="section-36">为什么错</h3>
+<p>函数内部：</p>
+<pre><code class="language-text">con   的类型是 contact*
+&amp;con  的类型是 contact**
+</code></pre>
+<p><code>SLErase</code> 需要 <code>seqlist*</code>，而 <code>contact</code> 和 <code>seqlist</code> 都是 <code>struct SeqList</code> 的别名，所以传 <code>contact*</code> 的 <code>con</code> 正合适；再加 <code>&amp;</code> 就多了一层指针。</p>
+<h3 id="section-37">正确写法</h3>
+<pre><code class="language-c">FindByName(con, name);
+SLErase(con, pos);
+</code></pre>
+<h3 id="section-38">用普通 <code>int</code> 再理解一次</h3>
+<pre><code class="language-c">void Change(int* p)
+{
+    *p = 100;
+}
+
+int main(void)
+{
+    int a = 10;
+    Change(&amp;a);
+    return 0;
+}
+</code></pre>
+<p>对应关系：</p>
+<table>
+<thead>
+<tr>
+<th>普通整数案例</th>
+<th>通讯录案例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>int a;</code></td>
+<td><code>contact con;</code></td>
+</tr>
+<tr>
+<td><code>int* p</code></td>
+<td><code>contact* con</code></td>
+</tr>
+<tr>
+<td><code>Change(&amp;a)</code></td>
+<td><code>AddContact(&amp;con)</code></td>
+</tr>
+<tr>
+<td>函数内部的 <code>p</code> 已经是指针</td>
+<td>函数内部的 <code>con</code> 已经是指针</td>
+</tr>
+</tbody></table>
+<h3 id="section-39">以后怎么判断</h3>
+<p>不要凭感觉数 <code>&amp;</code>，而要对照类型：</p>
+<pre><code class="language-text">实参是 contact，形参要 contact*   → 传 &amp;con
+实参已是 contact*，形参要 contact* → 直接传 con
+</code></pre>
+<hr>
+<h2 id="section-40">十三、<code>enum</code>：给菜单整数起有意义的名字</h2>
+<p>菜单选项：</p>
+<pre><code class="language-c">enum Option
+{
+    EXIT,
+    ADD,
+    DEL,
+    FIND,
+    MODIFY,
+    SHOW
+};
+</code></pre>
+<p>没有手动赋值时，枚举成员默认从 0 开始依次加 1，所以它实际上等价于：</p>
+<pre><code class="language-c">enum Option
+{
+    EXIT = 0,
+    ADD = 1,
+    DEL = 2,
+    FIND = 3,
+    MODIFY = 4,
+    SHOW = 5
+};
+</code></pre>
+<p><code>enum</code> 的核心意义是：给整数起有意义的名字。</p>
+<pre><code class="language-c">case ADD:
+</code></pre>
+<p>比下面更容易看懂：</p>
+<pre><code class="language-c">case 1:
+</code></pre>
+<p>以后即使忘了 1 对应什么操作，看到 <code>ADD</code> 也知道是添加联系人。</p>
+<hr>
+<h2 id="section-41">十四、实际语法错误复盘</h2>
+<p>这一章单独记录真实报错，因为考试和写代码时，最浪费时间的往往不是大知识点，而是一个引号、分号或冒号。</p>
+<h3 id="section-42">错误 1：把 <code>&amp;input</code> 写进双引号</h3>
+<h4>错误写法</h4>
+<pre><code class="language-c">scanf(&quot;%d,&amp;input&quot;);
+</code></pre>
+<h4>为什么错</h4>
+<p>双引号中的内容全部是格式字符串。编译器看到 <code>%d</code>，知道 <code>scanf</code> 还应该收到一个 <code>int*</code> 地址，但调用中只有一个字符串参数，没有提供 <code>%d</code> 对应的数据地址。</p>
+<p>常见报错：</p>
+<pre><code class="language-text">more &#39;%&#39; conversions than data arguments
+</code></pre>
+<h4>正确写法</h4>
+<pre><code class="language-c">scanf(&quot;%d&quot;, &amp;input);
+</code></pre>
+<h4>以后怎么判断</h4>
+<p>先把 <code>scanf</code> 分成两部分看：</p>
+<pre><code class="language-text">&quot;%d&quot;    告诉 scanf 按整数格式读取
+&amp;input   告诉 scanf 把结果存到哪里
+</code></pre>
+<p>【此处插入图片：more &#39;%&#39; conversions than data arguments 报错截图】</p>
+<p><em>图片说明：截取错误代码 <code>scanf(&quot;%d,&amp;input&quot;);</code>、红色波浪线和完整的 <code>more &#39;%&#39; conversions than data arguments</code> 报错文字。</em></p>
+<h3 id="section-43">错误 2：<code>scanf</code> 后忘记分号</h3>
+<h4>错误写法</h4>
+<pre><code class="language-c">scanf(&quot;%d&quot;, &amp;input)
+</code></pre>
+<h4>为什么错</h4>
+<p>C 语言普通语句通常要用分号结束。编译器继续读取下一行时，发现上一条语句还没有结束。</p>
+<p>常见报错：</p>
+<pre><code class="language-text">expected &#39;;&#39; after expression
+</code></pre>
+<h4>正确写法</h4>
+<pre><code class="language-c">scanf(&quot;%d&quot;, &amp;input);
+</code></pre>
+<h4>以后怎么判断</h4>
+<p>看到 <code>expected &#39;;&#39;</code>，先检查报错位置的前一行结尾。红线所在行不一定是真正写错的行。</p>
+<h3 id="section-44">错误 3：函数调用后写了冒号</h3>
+<h4>错误写法</h4>
+<pre><code class="language-c">FindContact(&amp;con):
+</code></pre>
+<h4>为什么错</h4>
+<p>函数调用是一条语句，结尾应当是分号。冒号常用于 <code>case</code>、标签等语法，不能代替普通语句的分号。</p>
+<h4>正确写法</h4>
+<pre><code class="language-c">FindContact(&amp;con);
+</code></pre>
+<h4>以后怎么判断</h4>
+<p>写完函数调用后检查结尾：</p>
+<pre><code class="language-text">函数调用();
+case 常量:
+</code></pre>
+<p>【此处插入图片：expected &#39;;&#39; after expression 报错截图】</p>
+<p><em>图片说明：优先截取漏写分号或把 <code>FindContact(&amp;con);</code> 写成冒号时的代码，并让 <code>expected &#39;;&#39; after expression</code> 报错完整可见。若两次报错都有截图，可以分别插入两张。</em></p>
+<h3 id="section-45">编译器报错位置为什么有时“看起来不对”</h3>
+<p>编译器按顺序读取代码。前一行少了分号时，它常常要读到下一行才确定语法无法继续，因此红线可能标在下一行。</p>
+<p>排错时不要只盯着红线，要一起检查：</p>
+<ol>
+<li>报错行。</li>
+<li>报错行的前一行。</li>
+<li>附近的引号、括号、分号和冒号是否配对。</li>
+</ol>
+<hr>
+<h2 id="section-46">十五、多文件编译：不能只编译 <code>test.c</code></h2>
+<p>这个项目有三个源文件：</p>
+<pre><code class="language-text">test.c
+contact.c
+seqlist.c
+</code></pre>
+<p><code>test.c</code> 中只有函数声明和调用，真正的实现分布在另外两个 <code>.c</code> 文件中。因此 Mac + VSCode 终端应当这样编译：</p>
+<pre><code class="language-bash">clang test.c contact.c seqlist.c -o contact
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">./contact
+</code></pre>
+<p><code>-o contact</code> 的意思是：把最终生成的可执行文件命名为 <code>contact</code>。</p>
+<p>更严格的复习检查可以使用：</p>
+<pre><code class="language-bash">clang -std=c11 -Wall -Wextra -Wpedantic -Werror \
+  test.c contact.c seqlist.c -o contact
+</code></pre>
+<h3 id="section-47">为什么“clang 生成活动文件”可能出问题</h3>
+<p>VSCode 的“生成活动文件”往往只编译当前打开的 <code>test.c</code>。编译器虽然能看到函数声明，却没有把 <code>contact.c</code>、<code>seqlist.c</code> 中的函数实现一起链接进来，于是会出现“符号未定义”一类链接错误。</p>
+<h3 id="section-48">错误做法 → 为什么错 → 正确做法 → 以后怎么判断</h3>
+<p><strong>错误做法：</strong></p>
+<pre><code class="language-bash">clang test.c -o contact
+</code></pre>
+<p><strong>为什么错：</strong> 缺少 <code>AddContact</code>、<code>SLPushBack</code> 等函数的实现文件。</p>
+<p><strong>正确做法：</strong></p>
+<pre><code class="language-bash">clang test.c contact.c seqlist.c -o contact
+</code></pre>
+<p><strong>以后怎么判断：</strong> 项目中有几个需要参与程序的 <code>.c</code> 文件，编译命令通常就要把它们都列出来；头文件不需要单独放进编译命令。</p>
+<hr>
+<h2 id="section-49">十六、最终完整项目代码与代码图片</h2>
+<p>下面五份代码来自本次最终确认版本。代码块用于复制；图片用于博客阅读和以后快速复习。图片直接从同一份源码生成，较长文件按行号拆成多张，没有省略代码。</p>
+<h3 id="section-50">1. <code>contact.h</code></h3>
+<!-- CODE:contact.h -->
+<pre><code class="language-c">#pragma once
+
+#define NAME_MAX 100
+
+#define SEX_MAX 4
+
+#define TEL_MAX 12
+
+#define ADDR_MAX 100
+
+
+
+//前置声明
+
+typedef struct SeqList contact;
+
+
+
+//用户数据
+
+typedef struct PersonInfo
+
+{
+    char name[NAME_MAX];
+    char sex[SEX_MAX];
+    char tel[TEL_MAX];
+    char addr[ADDR_MAX];
+}PeoInfo;
+
+
+
+//初始化通讯录
+
+void InitContact(contact* con);
+
+//添加通讯录数据
+
+void AddContact(contact* con);
+
+//删除通讯录数据
+
+void DelContact(contact* con);
+
+//展示通讯录数据
+
+void ShowContact(contact* con);
+
+//查找通讯录数据
+
+void FindContact(contact* con);
+
+//修改通讯录数据
+
+void ModifyContact(contact* con);
+
+//销毁通讯录数据
+
+void DestroyContact(contact* con);
+</code></pre>
+<p><img alt="contact.h 完整代码" decoding="async" loading="lazy" src="/2026/09/16/c-contact-seqlist-study-notes/images/code/contact-h.png"/></p>
+<p><em>图：<code>contact.h</code>——定义联系人数据、通讯录接口以及 <code>SeqList</code> 前置声明。</em></p>
+<h3 id="section-51">2. <code>contact.c</code></h3>
+<!-- CODE:contact.c -->
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &quot;seqlist.h&quot;
+#include &lt;string.h&gt;
+#include &lt;ctype.h&gt;
+
+//读取一个词；过长时读完剩余字符，避免影响下一次输入
+static int ReadWord(char* out,size_t capacity)
+{
+    int ch;
+    do
+    {
+        ch=getchar();
+    }while(ch!=EOF&amp;&amp;isspace((unsigned char)ch));
+    if(ch==EOF)
+    {
+        return 0;
+    }
+
+    size_t length=0;
+    int too_long=0;
+    do
+    {
+        if(length+1&lt;capacity)
+        {
+            out[length++]=(char)ch;
+        }
+        else
+        {
+            too_long=1;
+        }
+        ch=getchar();
+    }while(ch!=EOF&amp;&amp;!isspace((unsigned char)ch));
+    out[length]=&#39;\0&#39;;
+    if(too_long)
+    {
+        printf(&quot;输入过长，请重新操作！\n&quot;);
+    }
+    return !too_long;
+}
+//根据姓名查找联系人
+//找到返回下标
+//找不到返回-1
+static int FindByName(contact* con,const char* name)
+{
+    for(int i=0;i&lt;con-&gt;size;i++)
+    {
+        if(strcmp(con-&gt;arr[i].name,name)==0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+//初始化通讯录
+void InitContact(contact* con)
+{
+    SLInit(con);
+}
+//添加联系人
+void AddContact(contact* con)
+{
+    PeoInfo info;
+    printf(&quot;请输入姓名: &quot;);
+    if(!ReadWord(info.name,sizeof info.name))
+    {
+        return;
+    }
+    printf(&quot;请输入性别:&quot;);
+    if(!ReadWord(info.sex,sizeof info.sex))
+    {
+        return;
+    }
+    printf(&quot;请输入电话:&quot;);
+    if(!ReadWord(info.tel,sizeof info.tel))
+    {
+        return;
+    }
+    printf(&quot;请输入地址:&quot;);
+    if(!ReadWord(info.addr,sizeof info.addr))
+    {
+        return;
+    }
+    //调用顺序表尾插
+    SLPushBack(con,info);
+    printf(&quot;添加成功！\n&quot;);
+}
+//删除联系人
+void DelContact(contact* con)
+{
+    char name[NAME_MAX];
+    printf(&quot;请输入要删除掉联系人姓名：&quot;);
+    if(!ReadWord(name,sizeof name))
+    {
+        return;
+    }
+    int pos=FindByName(con,name);
+    if(pos==-1)
+    {
+        printf(&quot;没有找到该联系人！\n&quot;);
+        return;
+    }
+    //调用顺序表删除
+    SLErase(con,pos);
+    printf(&quot;删除成功！\n&quot;);
+}
+//展示联系人
+void ShowContact(contact* con)
+{
+    if(con-&gt;size==0)
+    {
+        printf(&quot;通讯录为空！\n&quot;);
+        return;
+    }
+    printf(&quot;\n&quot;);
+    printf(&quot;%-15s %-8s %-15s %-20s\n&quot;,
+           &quot;姓名&quot;, &quot;性别&quot;, &quot;电话&quot;, &quot;地址&quot;);
+
+    printf(&quot;------------------------------------------------------------\n&quot;);
+    for(int i=0;i&lt;con-&gt;size;i++)
+    {
+        printf(&quot;%-15s %-8s %-15s %-20s\n&quot;,
+               con-&gt;arr[i].name,
+               con-&gt;arr[i].sex,
+               con-&gt;arr[i].tel,
+               con-&gt;arr[i].addr);
+    }
+    printf(&quot;当前联系人数量:%d\n&quot;,con-&gt;size);
+}
+//查找联系人
+void FindContact(contact* con)
+{
+    char name[NAME_MAX];
+    printf(&quot;请输入要查找的联系人姓名：&quot;);
+    if(!ReadWord(name,sizeof name))
+    {
+        return;
+    }
+    int pos=FindByName(con,name);
+    if(pos==-1)
+    {
+        printf(&quot;没有找到联系人！\n&quot;);
+        return;
+    }
+    printf(&quot;\n找到联系人:\n&quot;);
+    printf(&quot;姓名：%s\n&quot;, con-&gt;arr[pos].name);
+    printf(&quot;性别：%s\n&quot;, con-&gt;arr[pos].sex);
+    printf(&quot;电话：%s\n&quot;, con-&gt;arr[pos].tel);
+    printf(&quot;地址：%s\n&quot;, con-&gt;arr[pos].addr);
+}
+//修改联系人
+void ModifyContact(contact* con)
+{
+    char name[NAME_MAX];
+    printf(&quot;请输入要修改的联系人姓名：&quot;);
+    if(!ReadWord(name,sizeof name))
+    {
+        return;
+    }
+    int pos=FindByName(con,name);
+    if(pos==-1)
+    {
+        printf(&quot;没有找到联系人！\n&quot;);
+        return;
+    }
+    PeoInfo updated={0};
+    printf(&quot;请输入新的姓名：&quot;);
+    if(!ReadWord(updated.name,sizeof updated.name))
+    {
+        return;
+    }
+    printf(&quot;请输入新的性别: &quot;);
+    if(!ReadWord(updated.sex,sizeof updated.sex))
+    {
+        return;
+    }
+
+    printf(&quot;请输入新的电话: &quot;);
+    if(!ReadWord(updated.tel,sizeof updated.tel))
+    {
+        return;
+    }
+
+    printf(&quot;请输入新的地址: &quot;);
+    if(!ReadWord(updated.addr,sizeof updated.addr))
+    {
+        return;
+    }
+
+    con-&gt;arr[pos]=updated;
+    printf(&quot;修改成功！\n&quot;);
+}
+//销毁通讯录
+void DestroyContact(contact* con)
+{
+    SLDestroy(con);
+}
+</code></pre>
+<p><img alt="contact.c 完整代码（第 1 部分，第 1—70 行）" decoding="async" loading="lazy" src="/2026/09/16/c-contact-seqlist-study-notes/images/code/contact-c-1.png"/></p>
+<p><em>图：<code>contact.c</code>（第 1—70 行）——安全读取输入、按姓名查找和添加联系人。</em></p>
+<p><img alt="contact.c 完整代码（第 2 部分，第 71—140 行）" decoding="async" loading="lazy" src="/2026/09/16/c-contact-seqlist-study-notes/images/code/contact-c-2.png"/></p>
+<p><em>图：<code>contact.c</code>（第 71—140 行）——继续添加，并实现删除、展示和查找。</em></p>
+<p><img alt="contact.c 完整代码（第 3 部分，第 141—196 行）" decoding="async" loading="lazy" src="/2026/09/16/c-contact-seqlist-study-notes/images/code/contact-c-3.png"/></p>
+<p><em>图：<code>contact.c</code>（第 141—196 行）——完成查找、修改和销毁。</em></p>
+<h3 id="section-52">3. <code>seqlist.h</code></h3>
+<!-- CODE:seqlist.h -->
+<pre><code class="language-c">#pragma once
+#include &lt;stdio.h&gt;
+#include &quot;contact.h&quot;
+# define DEFAULT_CAPACITY 4
+typedef PeoInfo SLDataType;
+struct SeqList
+{
+    SLDataType* arr;   
+    int size;
+    int capacity;
+};
+typedef struct SeqList seqlist;
+//初始化数据表
+void SLInit(seqlist* ps);
+//尾插数据
+void SLPushBack(seqlist* ps,SLDataType x);
+//删除指定位置数据
+void SLErase(seqlist* ps,int x);
+//销毁数据表
+void SLDestroy(seqlist* ps);
+
+</code></pre>
+<p><img alt="seqlist.h 完整代码" decoding="async" loading="lazy" src="/2026/09/16/c-contact-seqlist-study-notes/images/code/seqlist-h.png"/></p>
+<p><em>图：<code>seqlist.h</code>——定义元素类型、顺序表结构、默认容量和底层接口。</em></p>
+<h3 id="section-53">4. <code>seqlist.c</code></h3>
+<!-- CODE:seqlist.c -->
+<pre><code class="language-c">#include &quot;seqlist.h&quot;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;assert.h&gt;
+//检查容量
+static void SLCheckCapacity(seqlist* ps)
+{
+    assert(ps);
+    if(ps-&gt;size==ps-&gt;capacity)
+    {
+        int newcapacity=ps-&gt;size==0?DEFAULT_CAPACITY: ps-&gt;capacity*2;
+        SLDataType* tmp=(SLDataType*)realloc(ps-&gt;arr,sizeof(SLDataType)*newcapacity);
+        if(tmp==NULL)
+        {
+            perror(&quot;realloc fail&quot;);
+            exit(EXIT_FAILURE);
+        }
+        ps-&gt;arr=tmp;
+        ps-&gt;capacity=newcapacity;
+    }
+}
+//初始化
+void SLInit(seqlist* ps)
+{
+    assert(ps);
+    ps-&gt;arr=NULL;
+    ps-&gt;size=0;
+    ps-&gt;capacity=0;
+}
+//尾插
+void SLPushBack(seqlist* ps,SLDataType x)
+{
+    assert(ps);
+    SLCheckCapacity(ps);
+    ps-&gt;arr[ps-&gt;size]=x;
+    ps-&gt;size++;
+}
+//删除指定位置
+void SLErase(seqlist* ps,int pos)
+{
+    assert(ps);
+    assert(pos&gt;=0&amp;&amp;pos&lt;=ps-&gt;size-1);
+    for(int i=pos;i&lt;ps-&gt;size-1;i++)
+    {
+        ps-&gt;arr[i]=ps-&gt;arr[i+1];
+    }
+    ps-&gt;size--;
+}
+//销毁
+void SLDestroy(seqlist* ps)
+{
+    assert(ps);
+    free(ps-&gt;arr);
+    ps-&gt;arr=NULL;
+    ps-&gt;size=0;
+    ps-&gt;capacity=0;
+}
+</code></pre>
+<p><img alt="seqlist.c 完整代码" decoding="async" loading="lazy" src="/2026/09/16/c-contact-seqlist-study-notes/images/code/seqlist-c.png"/></p>
+<p><em>图：<code>seqlist.c</code>——实现容量检查、初始化、尾插、删除和销毁。</em></p>
+<h3 id="section-54">5. <code>test.c</code></h3>
+<!-- CODE:test.c -->
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;ctype.h&gt;
+#include &quot;seqlist.h&quot;
+//菜单
+void menu(void)
+{
+    printf(&quot;\n&quot;);
+    printf(&quot;******************************\n&quot;);
+    printf(&quot;*****     通讯录系统     *****\n&quot;);
+    printf(&quot;******************************\n&quot;);
+    printf(&quot;*****  1. 添加联系人    *****\n&quot;);
+    printf(&quot;*****  2. 删除联系人    *****\n&quot;);
+    printf(&quot;*****  3. 查找联系人    *****\n&quot;);
+    printf(&quot;*****  4. 修改联系人    *****\n&quot;);
+    printf(&quot;*****  5. 展示通讯录    *****\n&quot;);
+    printf(&quot;*****  0. 退出通讯录    *****\n&quot;);
+    printf(&quot;******************************\n&quot;);
+}
+//菜单选项
+enum Option
+{
+    EXIT,
+    ADD,
+    DEL,
+    FIND,
+    MODIFY,
+    SHOW
+};
+int main(void)
+{
+    int input=0;
+    //创建通讯录
+    contact con;
+    InitContact(&amp;con);
+    do
+    {
+        menu();
+        printf(&quot;请选择：&quot;);
+        int result=scanf(&quot;%d&quot;,&amp;input);
+        if(result==EOF)
+        {
+            break;
+        }
+        int ch;
+        int invalid=result!=1;
+        while((ch=getchar())!=&#39;\n&#39;&amp;&amp;ch!=EOF)
+        {
+            if(result==1&amp;&amp;!isspace((unsigned char)ch))
+            {
+                invalid=1;
+            }
+        }
+        if(invalid)
+        {
+            input=-1;
+            printf(&quot;选择错误，请重新选择！\n&quot;);
+            if(ch==EOF)
+            {
+                break;
+            }
+            continue;
+        }
+        
+        switch(input)
+        {
+            case ADD:
+            AddContact(&amp;con);
+            break;
+            
+            case DEL:
+            DelContact(&amp;con);
+            break;
+
+            case FIND:
+            FindContact(&amp;con);
+            break;
+
+            case MODIFY:
+            ModifyContact(&amp;con);
+            break;
+
+        case SHOW:
+            ShowContact(&amp;con);
+            break;
+
+        case EXIT:
+            printf(&quot;退出通讯录！\n&quot;);
+            break;
+
+        default:
+            printf(&quot;选择错误，请重新选择！\n&quot;);
+            break;
+        }
+    }while(input!=EXIT);
+    //程序结束前释放内存
+    DestroyContact(&amp;con);
+    return 0;
+}
+</code></pre>
+<p><img alt="test.c 完整代码（第 1 部分，第 1—50 行）" decoding="async" loading="lazy" src="/2026/09/16/c-contact-seqlist-study-notes/images/code/test-c-1.png"/></p>
+<p><em>图：<code>test.c</code>（第 1—50 行）——菜单、枚举、通讯录初始化和菜单输入检查。</em></p>
+<p><img alt="test.c 完整代码（第 2 部分，第 51—98 行）" decoding="async" loading="lazy" src="/2026/09/16/c-contact-seqlist-study-notes/images/code/test-c-2.png"/></p>
+<p><em>图：<code>test.c</code>（第 51—98 行）——<code>switch</code> 分发各项操作，并在退出前销毁通讯录。</em></p>
+<hr>
+<h2 id="section-55">十七、运行时可以怎样检查</h2>
+<p>编译：</p>
+<pre><code class="language-bash">clang -std=c11 -Wall -Wextra -Wpedantic -Werror \
+  test.c contact.c seqlist.c -o contact
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">./contact
+</code></pre>
+<p>建议至少手动检查以下流程：</p>
+<pre><code class="language-text">1. 添加两个联系人
+2. 展示通讯录
+3. 按姓名查找
+4. 修改联系人
+5. 删除联系人
+6. 再次展示
+7. 输入错误菜单字符，确认程序可以继续
+8. 退出程序
+</code></pre>
+<p>【此处插入图片：终端中添加、展示、查找、修改、删除联系人后正常退出的运行截图】</p>
+<p><em>图片说明：截取一次完整操作流程，至少让菜单、添加成功、查找结果、删除成功和退出提示清晰可见。</em></p>
+<hr>
+<h2 id="section-56">考前速记</h2>
+<pre><code class="language-text">1. size = 当前有效元素数量
+2. capacity = 已申请空间最多能装多少元素
+3. 有效下标范围 = 0 到 size - 1
+4. DEFAULT_CAPACITY 4 = 首次申请 4 个元素的位置，不是 4 字节
+5. 满了以后按 2 倍扩容：4、8、16、32……
+6. realloc 用 tmp 接收，成功后再赋给原指针
+7. 删除后尾部旧值可能还在，但 size-- 后已经无效
+8. free 后重置：arr = NULL，size = 0，capacity = 0
+
+9. &amp;变量 = 取地址
+10. *指针 = 解引用，通过地址找到对象
+11. main 中 con 是 contact → 调用传 &amp;con
+12. 函数内 con 已经是 contact* → 继续调用传 con
+13. 对 contact* 再取地址会变成 contact**
+
+14. typedef = 给类型起别名，不创建变量，不申请内存
+15. struct SeqList 和 SeqList 不一定天然相同，必须经过 typedef
+16. typedef PeoInfo SLDataType 后，SLDataType* 就是 PeoInfo*
+17. C 语言严格区分大小写
+18. struct SeqList、struct Seqlist、struct seqList 完全不同
+19. 前置声明只能说明“有这个类型”，不能访问内部成员
+20. 看到完整 struct 定义以后，才能使用 ps-&gt;size、ps-&gt;arr
+
+21. static 函数只在当前 .c 文件使用
+22. enum 是给整数起有意义的名字
+23. EXIT、ADD、DEL、FIND、MODIFY、SHOW 默认对应 0、1、2、3、4、5
+
+24. 正确：scanf(&quot;%d&quot;, &amp;input);
+25. 不要把 &amp;input 写进双引号
+26. 普通语句结尾注意分号 ;
+27. 函数调用结尾是 ;，不是 :
+28. 报错位置不一定是真正错误位置，也要检查前一行
+
+29. 多文件项目编译：
+    clang test.c contact.c seqlist.c -o contact
+30. VSCode“生成活动文件”可能只编译当前一个 .c 文件
+</code></pre>
+<p>最后把整套逻辑压缩成一句话：</p>
+<blockquote>
+<p><code>contact</code> 和 <code>seqlist</code> 是同一个 <code>struct SeqList</code> 的不同别名；<code>arr</code> 指向一组 <code>PeoInfo</code>，<code>size</code> 决定有效数据，<code>capacity</code> 决定空间上限；主函数把 <code>&amp;con</code> 交给业务函数，业务函数再把已经是指针的 <code>con</code> 交给顺序表函数。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://gotesla.github.io/">chengs</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://gotesla.github.io/2026/09/16/c-contact-seqlist-study-notes/">https://gotesla.github.io/2026/09/16/c-contact-seqlist-study-notes/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://gotesla.github.io/" target="_blank">chengs的妙妙屋</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/2026/09/16/c-contact-seqlist-study-notes/images/code/contact-h.png" data-sites="facebook,x,wechat,weibo,qq"></div><link href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'" rel="stylesheet"/><script defer="" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Giscus</span><span id="switch-btn"></span><span class="second-comment">Twikoo</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img alt="avatar" onerror="this.onerror=null;this.src='/img/friend_404.gif'" src="/img/Giselle3.jpg"/></div><div class="author-info-name">chengs</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a href="https://github.com/xxxxxx" id="card-info-btn" rel="noopener" target="_blank"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#section-1">一、先看项目由哪五个文件组成</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-2">二、动态顺序表基础：size 和 capacity 不是一回事</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-3">我当时为什么容易理解错</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-4">错误写法 → 为什么错 → 正确理解 → 以后怎么判断</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-5">三、DEFAULT_CAPACITY 4 和 4、8、16、32 扩容</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-6">为什么不每次只增加 1</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-7">四、realloc 做什么，为什么必须用 tmp 接收</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-8">错误写法</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-9">为什么错</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-10">正确写法</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-11">以后怎么判断</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-12">五、删除以后为什么还能看到旧数据</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-13">错误理解 → 为什么错 → 正确理解 → 以后怎么判断</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-14">六、free 后为什么还要重置三个成员</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-15">以后怎么判断</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-16">七、结构体与 typedef：它只起别名，不创建对象</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-17">1. 完整结构体定义</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-18">2. 三种别名分别是什么意思</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-19">3. typedef 不会做什么</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-20">错误理解 → 为什么错 → 正确理解 → 以后怎么判断</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-21">八、typedef PeoInfo SLDataType; 为什么能让顺序表存联系人</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-22">九、前置声明与“不完整类型”</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-23">我实际犯过的大小写错误</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-24">错误写法</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-25">为什么错</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-26">正确写法</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-27">以后怎么判断</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-28">十、static：当前 .c 文件内部的辅助函数</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-29">函数内部的 static 局部变量</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-30">十一、头文件和源文件怎样配合</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-31">为什么自己的 .c 最好直接包含自己的 .h</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-32">十二、重点：到底传 &con 还是传 con</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-33">1. main 中的 con 是普通结构体变量</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-34">2. 进入函数后，形参 con 已经是指针</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-35">错误写法</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-36">为什么错</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-37">正确写法</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-38">用普通 int 再理解一次</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-39">以后怎么判断</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-40">十三、enum：给菜单整数起有意义的名字</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-41">十四、实际语法错误复盘</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-42">错误 1：把 &input 写进双引号</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-43">错误 2：scanf 后忘记分号</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-44">错误 3：函数调用后写了冒号</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-45">编译器报错位置为什么有时“看起来不对”</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-46">十五、多文件编译：不能只编译 test.c</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-47">为什么“clang 生成活动文件”可能出问题</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-48">错误做法 → 为什么错 → 正确做法 → 以后怎么判断</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-49">十六、最终完整项目代码与代码图片</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-50">1. contact.h</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-51">2. contact.c</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-52">3. seqlist.h</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-53">4. seqlist.c</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#section-54">5. test.c</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-55">十七、运行时可以怎样检查</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#section-56">考前速记</a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/16/c-contact-seqlist-study-notes/" title="C语言动态顺序表实现通讯录：从类型别名、指针到多文件编译">C语言动态顺序表实现通讯录：从类型别名、指针到多文件编译</a><time datetime="2026-09-16" title="发表于 2026-09-16">2026-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/14/c-seqlist-study-notes/" title="C语言动态顺序表学习笔记：从 size、capacity 到指针、动态内存与增删操作">C语言动态顺序表学习笔记：从 size、capacity 到指针、动态内存与增删操作</a><time datetime="2026-09-14" title="发表于 2026-09-14">2026-09-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/10/c-algorithms-notes/" title="从知识点到错题复盘：C 语言数组、递归与时间复杂度">从知识点到错题复盘：C 语言数组、递归与时间复杂度</a><time datetime="2026-09-10" title="发表于 2026-09-10">2026-09-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/07/hello-world/" title="Hello World">Hello World</a><time datetime="2026-03-07T09:49:45.269Z" title="发表于 2026-03-07 17:49:45">2026-03-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">© 2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a href="https://hexo.io" rel="noopener" target="_blank">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" rel="noopener" target="_blank">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式" type="button"><i class="fas fa-book-open"></i></button><button id="darkmode" title="日间和夜间模式切换" type="button"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" title="单栏和双栏切换" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" title="设置" type="button"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" title="目录" type="button"><i class="fas fa-list-ul"></i></button><a href="#post-comment" id="to_comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" title="回到顶部" type="button"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'gotesla/gotesla.github.io',
+      'data-repo-id': '',
+      'data-category-id': '',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-vercel-kappa-flax.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo-vercel-kappa-flax.vercel.app/',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    GLOBAL_CONFIG_SITE.pageType === 'post' && getCount()
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Giscus' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Giscus' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
+<meting-js api="https://api.injahow.cn/meting/?server=:server&amp;type=:type&amp;id=:id&amp;auth=:auth&amp;refer=:refer" fixed="true" id="2613364493" list-folded="true" mini="true" order="random" server="netease" theme="#ff6b81" type="playlist">
+</meting-js>
+<script>
+  (function() {
+    const runAnimation = () => {
+      const selectors = ['#recent-posts > .recent-post-item', '.card-widget', '#post', '#page', '.layout'];
+      const targets = document.querySelectorAll(selectors.join(','));
+      targets.forEach(el => {
+        if (el && !el.classList.contains('animate-item')) {
+          el.classList.add('animate-item');
+        }
+      });
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('is-visible');
+          else entry.target.classList.remove('is-visible');
+        });
+      }, { threshold: 0.01, rootMargin: '-50px 0px -50px 0px' });
+      targets.forEach(item => {
+        if (item) {
+          observer.unobserve(item);
+          observer.observe(item);
+        }
+      });
+    };
+
+    const initProgress = () => {
+      if (!document.getElementById('read-progress')) {
+        const progDiv = document.createElement('div');
+        progDiv.id = 'read-progress';
+        document.body.appendChild(progDiv);
+      }
+      window.onscroll = () => {
+        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const el = document.getElementById('read-progress'); // 修正了这里的空格
+        if (el) el.style.width = (winScroll / height) * 100 + "%";
+      };
+    };
+
+    if (!window.heartInit) {
+      window.addEventListener('click', (e) => {
+        const heart = document.createElement('div');
+        heart.className = 'click-heart';
+        heart.innerHTML = '❤';
+        heart.style.left = (e.clientX - 10) + 'px';
+        heart.style.top = (e.clientY - 10) + 'px';
+        heart.style.color = `hsl(${Math.random() * 360}, 100%, 75%)`;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 800);
+      });
+      window.heartInit = true;
+    }
+
+    initProgress();
+    runAnimation();
+
+    document.addEventListener('pjax:complete', () => {
+      initProgress();
+      runAnimation();
+    });
+  })();
+</script>
+<script async="async" id="click-heart" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js"></script><script defer="defer" src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:description\"]","link[rel=\"canonical\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
