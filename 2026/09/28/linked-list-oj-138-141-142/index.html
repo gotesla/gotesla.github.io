@@ -323,7 +323,7 @@ struct ListNode *detectCycle(struct ListNode *head) {
 <li><strong>无环要返回 <code>NULL</code>。</strong> <code>fast</code> 无法继续走两步时，循环结束并执行最后的 <code>return NULL;</code>。<code>pos</code> 同样不参与函数计算。</li>
 </ul>
 <h4 id="head-meet">为什么 <code>head</code> 和 <code>meet</code> 会在入口相遇？</h4>
-<p>结合我画的环形链表来记：设链表头到环入口有 <code>a</code> 步，入口沿 <code>next</code> 到第一次相遇点有 <code>b</code> 步，环一圈有 <code>C</code> 步。图上写的 <code>L</code>、<code>N</code>、<code>C</code>，分别就是这里的 <code>a</code>、<code>b</code>、<code>C</code>。</p>
+<p>设链表头到环入口有 <code>a</code> 步，入口沿 <code>next</code> 到第一次相遇点有 <code>b</code> 步，环一圈有 <code>C</code> 步。</p>
 <p>第一次相遇时，<code>slow</code> 走了 <code>a + b</code> 步；<code>fast</code> 速度是它的两倍，并且比它多绕了整数圈。设多绕 <code>k</code> 圈（<code>k &gt;= 1</code>）：</p>
 <pre><code class="language-text">slow：a + b
 fast：a + b + kC = 2(a + b)
