@@ -10,7 +10,7 @@
 <meta content="summary" name="twitter:card"/>
 <meta content="http://example.com/img/Giselle3.jpg" name="twitter:image"/><script type="application/ld+json"></script><link href="/img/favicon.png" rel="shortcut icon"/><link href="https://gotesla.github.io/archives/2026/10/" rel="canonical"/><link href="//cdn.jsdelivr.net" rel="preconnect"/><link href="//busuanzi.ibruce.info" rel="preconnect"/><link href="/css/index.css?v=5.5.4" rel="stylesheet"/><link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css" rel="stylesheet"/><script>
     (() => {
-      
+
     const saveToLocal = {
       set: (key, value, ttl) => {
         if (!ttl) return
@@ -61,8 +61,8 @@
         parent.globalFn = globalFn
       }
     }
-  
-      
+
+
       const activateDarkMode = () => {
         document.documentElement.setAttribute('data-theme', 'dark')
         if (document.querySelector('meta[name="theme-color"]') !== null) {
@@ -80,23 +80,23 @@
       btf.activateLightMode = activateLightMode
 
       const theme = saveToLocal.get('theme')
-    
+
           theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
-        
-      
+
+
       const asideStatus = saveToLocal.get('aside-status')
       if (asideStatus !== undefined) {
         document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
       }
-    
-      
+
+
     const detectApple = () => {
       if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
         document.documentElement.classList.add('apple')
       }
     }
     detectApple()
-  
+
     })()
   </script><script>const GLOBAL_CONFIG = {
   root: '/',
@@ -149,7 +149,7 @@
   }
 
   /* 2. 初始状态：给所有目标加一个统一的动画基础类 */
-  .animate-item { 
+  .animate-item {
     opacity: 0 !important;
     transform: scale(0.9) translateY(40px) !important;
     transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1) !important;
@@ -235,7 +235,7 @@
         heart.innerHTML = '❤';
         heart.style.left = (e.clientX - 10) + 'px';
         heart.style.top = (e.clientY - 10) + 'px';
-        heart.style.color = `hsl(${Math.random() * 360}, 100%, 75%)`; 
+        heart.style.color = `hsl(${Math.random() * 360}, 100%, 75%)`;
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), 800);
       });
@@ -244,7 +244,7 @@
 
     initProgress();
     runAnimation();
-    
+
     document.addEventListener('pjax:complete', () => {
       initProgress();
       runAnimation();
