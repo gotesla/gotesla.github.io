@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+<html data-theme="light" lang="zh-CN"><head><meta charset="utf-8"/><meta content="IE=edge" http-equiv="X-UA-Compatible"/><meta content="width=device-width, initial-scale=1.0,viewport-fit=cover" name="viewport"/><title>栈的顺序表实现与 LeetCode 20 有效的括号：从扩容到配对判断 | chengs的妙妙屋</title><meta content="chengs" name="author"/><meta content="chengs" name="copyright"/><meta content="telephone=no" name="format-detection"/><meta content="#ffffff" name="theme-color"/><meta content="完整保留 Stack.h、Stack.c、test.c 和有效的括号题解，详解 SLPush 扩容、栈接口易错点与逐字符括号匹配。" name="description"/>
+<meta content="article" property="og:type"/>
+<meta content="栈的顺序表实现与 LeetCode 20 有效的括号：从扩容到配对判断" property="og:title"/>
+<meta content="https://gotesla.github.io/2026/10/01/stack-and-leetcode-20-study-notes/" property="og:url"/>
+<meta content="chengs的妙妙屋" property="og:site_name"/>
+<meta content="完整保留 Stack.h、Stack.c、test.c 和有效的括号题解，详解 SLPush 扩容、栈接口易错点与逐字符括号匹配。" property="og:description"/>
+<meta content="zh_CN" property="og:locale"/>
+<meta content="https://gotesla.github.io/2026/10/01/stack-and-leetcode-20-study-notes/images/leetcode-20-problem-2026-10-01.png" property="og:image"/>
+<meta content="2026-10-01T12:00:00+08:00" property="article:published_time"/>
+<meta content="2026-10-01T12:00:00+08:00" property="article:modified_time"/>
+<meta content="chengs" property="article:author"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="https://gotesla.github.io/2026/10/01/stack-and-leetcode-20-study-notes/images/leetcode-20-problem-2026-10-01.png" name="twitter:image"/><link href="/img/favicon.png" rel="shortcut icon"/><link href="https://gotesla.github.io/2026/10/01/stack-and-leetcode-20-study-notes/" rel="canonical"/><link href="//cdn.jsdelivr.net" rel="preconnect"/><link href="//busuanzi.ibruce.info" rel="preconnect"/><link href="/css/index.css?v=5.5.4" rel="stylesheet"/><link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css" rel="stylesheet"/><script>
+    (() => {
+
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+
+
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+
+
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+
+
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {"title": "栈的顺序表实现与 LeetCode 20 有效的括号：从扩容到配对判断", "isHighlightShrink": false, "isToc": true, "pageType": "post"}</script><link href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" rel="stylesheet"/><link href="/css/custom.css" rel="stylesheet"/><style>
+  /* 1. 进度条保持 */
+  #read-progress {
+    position: fixed; top: 0; left: 0; width: 0; height: 3px;
+    background: #ff6b81; z-index: 10000; transition: width 0.2s ease-out;
+  }
+
+  /* 2. 初始状态：给所有目标加一个统一的动画基础类 */
+  .animate-item {
+    opacity: 0 !important;
+    transform: scale(0.9) translateY(40px) !important;
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    will-change: opacity, transform;
+  }
+
+  /* 3. 激活状态 */
+  .animate-item.is-visible {
+    opacity: 1 !important;
+    transform: scale(1) translateY(0) !important;
+  }
+
+  /* 4. 点击爱心 */
+  .click-heart {
+    position: fixed; z-index: 9999; pointer-events: none;
+    color: #ff6b81; font-size: 20px;
+    animation: heart-float 0.8s ease-out forwards;
+  }
+  @keyframes heart-float {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.6) rotate(15deg); }
+  }
+  /* 播放器强制显形 */
+  .aplayer.aplayer-fixed {
+    z-index: 999999 !important;
+    display: block !important;
+    bottom: 20px !important;
+    left: 20px !important;
+  }
+</style>
+<meta content="Hexo 8.1.1" name="generator"/><style>#article-container pre{overflow-x:auto;padding:18px;border-radius:10px;background:#f4f6fa;color:#18243a;line-height:1.65} #article-container img{max-width:100%;height:auto;border-radius:10px} #article-container p:has(>em:only-child){font-size:.9em;color:#65718a}</style><link href="/css/wallpaper.css?v=20260910b" rel="stylesheet"/></head><body><div aria-hidden="true" id="web_bg"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">chengs的妙妙屋</span></a><a class="nav-page-title" href="/"><span class="site-name">栈的顺序表实现与 LeetCode 20 有效的括号：从扩容到配对判断</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">栈的顺序表实现与 LeetCode 20 有效的括号：从扩容到配对判断</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-01T12:00:00+08:00" title="2026-10-01">2026-10-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-01T12:00:00+08:00" title="2026-10-01">2026-10-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" data-flag-title="" id=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="leetcode-20">栈的顺序表实现与 LeetCode 20 有效的括号：从扩容到配对判断</h1>
+<p>我正在学习栈和队列。这篇先记录已经写出来的<strong>顺序栈</strong>、<code>test.c</code> 中的练习，以及用这个栈做的 LeetCode 20「有效的括号」。本文保留我当时的原代码，包括注释掉的练习和函数命名不一致的地方；后面单独说明问题与最小修正，便于复习时看到真实的思考过程。这里没有队列的实现代码，所以不把栈误写成队列。</p>
+<h2 id="atopcapacity">一、先认清这个栈：<code>a</code>、<code>top</code>、<code>capacity</code></h2>
+<p><code>ST</code> 用动态数组保存数据。<code>a</code> 指向数组起始位置；<code>capacity</code> 表示已经申请到的<strong>元素个数</strong>；<code>top</code> 表示目前已有的<strong>有效元素个数</strong>，同时也是下一个元素应该写入的下标。这样空栈是 <code>top == 0</code>，栈顶下标是 <code>top - 1</code>，有效范围是 <code>a[0]</code> 到 <code>a[top - 1]</code>。</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th style="text-align: right;"><code>top</code></th>
+<th style="text-align: right;"><code>capacity</code></th>
+<th>下一次入栈位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>刚初始化</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>先申请空间，再写 <code>a[0]</code></td>
+</tr>
+<tr>
+<td>压入 1、2、3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td><code>a[3]</code></td>
+</tr>
+<tr>
+<td>四个位置都用完</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td>必须先扩容</td>
+</tr>
+</tbody>
+</table>
+<p>这里选的是“<code>top</code> 指向下一个空位”的写法。有的教材让 <code>top</code> 指向当前栈顶，初始值便可能是 <code>-1</code>；两种约定都能用，<strong>但入栈、出栈、判空、取栈顶必须贯彻同一种约定</strong>。</p>
+<h3 id="stackh"><code>Stack.h</code>：完整原代码</h3>
+<pre><code class="language-c">#pragma once
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdbool.h&gt;
+typedef int SLDataType;
+typedef struct Stack{
+    SLDataType* a;
+    int top;
+    int capacity;
+}ST;
+//初始化和销毁
+void SLInit(ST* pst);
+void STDestroy(ST* pst);
+//入栈和出栈
+void SLPush(ST* pst,SLDataType x);
+void SLPop(ST* pst);
+//取栈顶数据
+SLDataType STTop(ST* pst);
+//判空
+bool STEmpty(ST* pst);
+//获取数据个数
+int STsize(ST * size);
+</code></pre>
+<p><code>typedef int SLDataType;</code> 把栈的数据类型暂定为 <code>int</code>，所以 <code>a</code> 是 <code>int</code> 数组。<code>typedef struct Stack { ... } ST;</code> 让后续函数可以用 <code>ST*</code> 表示栈地址。<code>#pragma once</code> 防止头文件在一次编译中重复展开；四个标准头文件分别提供 <code>printf</code>/<code>perror</code>、<code>malloc</code>/<code>realloc</code>/<code>free</code>、<code>assert</code> 和 <code>bool</code>。</p>
+<p>头文件负责<strong>声明</strong>，<code>Stack.c</code> 负责<strong>定义</strong>，<code>test.c</code> 负责<strong>调用</strong>。三处的函数名和参数类型必须一致；参数变量叫 <code>size</code> 还是 <code>pst</code> 不影响链接，但 <code>STsize(ST * size)</code> 中的 <code>size</code> 实际上也是一个栈指针，叫 <code>pst</code> 更不容易误解。</p>
+<h2 id="stackc">二、逐个看 <code>Stack.c</code> 的功能和用法</h2>
+<h3 id="stackc_1"><code>Stack.c</code>：完整原代码</h3>
+<pre><code class="language-c">#include "Stack.h"
+void SLInit(ST* pst){
+    assert(pst);
+    pst-&gt;a=NULL;
+    pst-&gt;top=0;
+    pst-&gt;capacity=0;
+}
+void SLDestroy(ST* pst){
+    assert(pst);
+    free(pst-&gt;a);
+    pst-&gt;top=pst-&gt;capacity=0;
+}
+void SLPush(ST* pst,SLDataType x){
+    assert(pst);
+    //扩容
+    if(pst-&gt;top==pst-&gt;capacity){
+        int newcapacity=pst-&gt;capacity==0?4:pst-&gt;capacity*2;
+        SLDataType* tmp=(SLDataType*)realloc(pst-&gt;a,sizeof(SLDataType)*newcapacity);
+        if(tmp==NULL){
+            perror("realloc fail");
+            return;
+        }
+        pst-&gt;a=tmp;
+        pst-&gt;capacity=newcapacity;
+    }
+    pst-&gt;a[pst-&gt;top]=x;
+    pst-&gt;top++;
+}
+void STPop(ST* pst){
+    assert(pst);
+    assert(pst-&gt;top&gt;0);
+    pst-&gt;top--;
+}
+SLDataType STTop(ST* pst){
+    assert(pst);
+    assert(pst-&gt;top&gt;0);
+    return pst-&gt;a[pst-&gt;top-1];
+}
+bool STEmpty(ST* pst){
+    assert(pst);
+    return pst-&gt;top==0;
+}
+int STsize(ST* pst){
+    assert(pst);
+    return pst-&gt;top;
+}
+</code></pre>
+<h3 id="slinit"><code>SLInit</code>：初始化</h3>
+<p>调用 <code>SLInit(&amp;s)</code> 时，<code>&amp;s</code> 是局部变量 <code>s</code> 的地址，函数通过 <code>pst</code> 修改同一个栈。<code>assert(pst)</code> 要求这个地址不为 <code>NULL</code>。随后把数组指针设为 <code>NULL</code>，把元素数和容量都设为 0。初始化后，<strong>还没有申请数组内存</strong>；第一次 <code>SLPush</code> 才会申请。先初始化再使用，才不会拿未初始化的野指针去 <code>realloc</code> 或 <code>free</code>。</p>
+<h3 id="slpush"><code>SLPush</code>：最需要搞懂的动态扩容</h3>
+<p>入栈的顺序是：检查栈指针 → 判断空间是否已满 → 必要时申请更大的数组 → 在 <code>a[top]</code> 写入数据 → <code>top++</code>。绝不能先写入再判断是否扩容。</p>
+<pre><code class="language-text">初始：a = NULL，top = 0，capacity = 0
+压入 10：0 == 0，扩到 4；写 a[0] = 10；top 变 1
+再压 20、30、40：依次写 a[1]、a[2]、a[3]；top 变 4
+压入 50：4 == 4，扩到 8；写 a[4] = 50；top 变 5
+</code></pre>
+<p><code>if (pst-&gt;top == pst-&gt;capacity)</code> 的意思是“有效元素数等于可存元素数”，即没有空位。<code>pst-&gt;capacity == 0 ? 4 : pst-&gt;capacity * 2</code> 在第一次分配时取 4，以后每次翻倍。增长策略让多数入栈只需一次写入；偶尔扩容会复制旧元素，单次最坏 <code>O(n)</code>，连续入栈的<strong>均摊</strong>时间是 <code>O(1)</code>。</p>
+<p><code>realloc(pst-&gt;a, sizeof(SLDataType) * newcapacity)</code> 的第二个参数是<strong>字节数</strong>，所以必须乘 <code>sizeof(SLDataType)</code>。这里的 <code>newcapacity</code> 是“多少个元素”，并非“多少字节”。<code>realloc(NULL, n)</code> 相当于首次申请内存。已有内存时，它可能在原地址扩，也可能搬到新地址；旧数据会保留到新申请的空间中，但成功后只应使用返回的新指针。</p>
+<p>为什么先接到 <code>tmp</code>，再写 <code>pst-&gt;a = tmp</code>？因为 <code>realloc</code> 失败会返回 <code>NULL</code>，而原内存仍归原指针所有。如果直接写 <code>pst-&gt;a = realloc(...)</code>，失败时就丢了原地址，内存泄漏。当前写法失败后调用 <code>perror</code> 并 <code>return</code>，<code>top</code> 和 <code>capacity</code> 没变，旧栈仍可使用；但 <code>SLPush</code> 返回 <code>void</code>，调用者<strong>无法从返回值判断这次入栈是否成功</strong>。后面的 LeetCode 解法依赖压栈成功，内存不足时可能错误地判断括号。若要把这套栈用于需要可靠错误处理的程序，应让入栈函数返回成功/失败，或采用明确的退出策略。还有一点：<code>capacity * 2</code> 和 <code>sizeof(...) * newcapacity</code> 在极大输入下应检查整数溢出，本练习代码没有做这个防护。</p>
+<p>扩容成功后先更新 <code>a</code> 和 <code>capacity</code>，再执行 <code>pst-&gt;a[pst-&gt;top] = x; pst-&gt;top++;</code>。写入时 <code>top</code> 仍是下一个空位的下标；自增后它又恢复为有效元素个数。这里<strong>不能先 <code>top++</code> 再用 <code>a[top]</code></strong>，否则第一次入栈就会跳过 <code>a[0]</code>。</p>
+<h3 id="sldestroy"><code>SLDestroy</code>：销毁</h3>
+<p><code>free(pst-&gt;a)</code> 归还动态数组，<code>free(NULL)</code> 也是安全的。之后把 <code>top</code>、<code>capacity</code> 清零。当前代码<strong>没有把 <code>pst-&gt;a</code> 设回 <code>NULL</code></strong>，因此留下悬空指针：销毁后若再次调用 <code>SLDestroy</code>，或者不重新初始化就入栈，都可能出错。最小修正是在 <code>free</code> 后补 <code>pst-&gt;a = NULL;</code>。不过本文原代码保持不动，提醒自己按现状只能销毁一次、销毁后不再使用。</p>
+<h3 id="stpopsttopstemptystsize"><code>STPop</code>、<code>STTop</code>、<code>STEmpty</code>、<code>STsize</code></h3>
+<ul>
+<li><code>STPop(&amp;s)</code> 只让 <code>top--</code>，逻辑上删掉栈顶，不必清空数组里的旧值；下一次入栈会覆盖它。<code>assert(pst-&gt;top &gt; 0)</code> 表示空栈不能出栈。函数定义是 <code>STPop</code>，头文件却声明成 <code>SLPop</code>，必须统一。</li>
+<li><code>STTop(&amp;s)</code> 返回 <code>a[top - 1]</code>，但<strong>不删除</strong>元素；所以通常先读栈顶，再调用 <code>STPop</code>。空栈时不能读取，函数用断言阻止这种调用。</li>
+<li><code>STEmpty(&amp;s)</code> 在 <code>top == 0</code> 时返回 <code>true</code>。遍历出栈时可以写 <code>while (!STEmpty(&amp;s))</code>。</li>
+<li><code>STsize(&amp;s)</code> 返回有效元素个数 <code>top</code>，并非容量。头文件中参数名 <code>size</code> 没有改变函数类型，但建议改成 <code>pst</code> 便于阅读。</li>
+</ul>
+<p><code>assert</code> 只适合检查“调用者本不该犯的错误”。开启 <code>NDEBUG</code> 时断言可能被编译掉，所以不能把它当成正式的空栈错误处理。调用 <code>STTop</code>/<code>STPop</code> 前仍要确保非空。</p>
+<h2 id="testc">三、<code>test.c</code>：完整原代码与实际执行顺序</h2>
+<pre><code class="language-c">#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+//
+//int main()
+//{
+//  // 原地扩容
+//  // 异地扩容
+//  int* p1 = (int*)malloc(8);
+//  printf("%p\n", p1);
+//
+//  int* p2 = (int*)realloc(p1, 80);
+//  printf("%p\n", p2);
+//
+//  free(p2);
+//
+//
+//  int i = 0;
+//  int ret1 = ++i;
+//
+//  int ret2 = i++;
+//
+//
+//
+//  return 0;
+//}
+
+#include"Stack.h"
+
+//int main()
+//{
+//  ST s;
+//  STInit(&amp;s);
+//  STPush(&amp;s, 1);
+//  STPush(&amp;s, 2);
+//  STPush(&amp;s, 3);
+//  STPush(&amp;s, 4);
+//
+//  printf("%d\n", STTop(&amp;s));
+//  STPop(&amp;s);
+//  printf("%d\n", STTop(&amp;s));
+//  STPop(&amp;s);
+//  STPop(&amp;s);
+//  STPop(&amp;s);
+//  STPop(&amp;s);
+//
+//  //printf("%d\n", STTop(&amp;s));
+//
+//  STDestroy(&amp;s);
+//
+//  return 0;
+//}
+
+int main()
+{
+    // 入栈：1 2 3 4
+    // 出栈：4 3 2 1  /  2 4 3 1
+    ST s;
+    STInit(&amp;s);
+    STPush(&amp;s, 1);
+    STPush(&amp;s, 2);
+
+    printf("%d ", STTop(&amp;s));
+    STPop(&amp;s);
+
+    STPush(&amp;s, 3);
+    STPush(&amp;s, 4);
+
+    while (!STEmpty(&amp;s))
+    {
+        printf("%d ", STTop(&amp;s));
+        STPop(&amp;s);
+    }
+
+    STDestroy(&amp;s);
+}
+</code></pre>
+<p>这份文件有三段练习。第一段已注释的 <code>malloc</code>/<code>realloc</code> 用来观察<strong>原地扩容和异地扩容</strong>：两个地址是否相同都可能发生，不能预设一定原地扩。它没有检查分配失败，也没有展示失败时原指针仍有效的处理方式，所以更适合作概念练习。<code>++i</code> 是先自增再作为表达式的值，<code>i++</code> 是先取旧值再自增；从 <code>i = 0</code> 开始，<code>ret1 = 1</code>，随后 <code>ret2 = 1</code>、<code>i = 2</code>。</p>
+<p>第二段已注释的 <code>main</code> 演示连续入栈、读栈顶、出栈。其中入了 4 个元素却调用了 <strong>5 次</strong> <code>STPop</code>；若解除注释并按一致的函数名编译，最后一次会对空栈出栈，触发断言。它还提醒我们：<code>STTop</code> 不等于出栈，读完若想删除仍须 <code>STPop</code>。</p>
+<p>当前实际的 <code>main</code> 先入栈 <code>1</code>、<code>2</code>，输出并弹出 <code>2</code>；再入栈 <code>3</code>、<code>4</code>，循环输出并弹出 <code>4</code>、<code>3</code>、<code>1</code>。所以按预期顺序输出是 <strong><code>2 4 3 1</code></strong>，这是一种合法的栈出栈序列。<code>4 3 2 1</code> 对应四个元素都先入栈再连续出栈，是另一种操作顺序。循环判空避免了对空栈调用 <code>STTop</code>，最后 <code>STDestroy</code> 负责释放数组。</p>
+<h3 id="_1">这份原代码为什么目前编译不过？</h3>
+<p>我用 C11 的编译检查核对了磁盘上的原文件，<code>test.c</code> 的 <code>STInit</code>、<code>STPush</code>、<code>STPop</code> 找不到相应声明。名字对应关系如下：</p>
+<table>
+<thead>
+<tr>
+<th>调用处</th>
+<th>头文件声明</th>
+<th><code>Stack.c</code> 定义</th>
+<th>最小统一方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>STInit</code></td>
+<td><code>SLInit</code></td>
+<td><code>SLInit</code></td>
+<td>调用处改成 <code>SLInit</code></td>
+</tr>
+<tr>
+<td><code>STPush</code></td>
+<td><code>SLPush</code></td>
+<td><code>SLPush</code></td>
+<td>调用处改成 <code>SLPush</code></td>
+</tr>
+<tr>
+<td><code>STPop</code></td>
+<td><code>SLPop</code></td>
+<td><code>STPop</code></td>
+<td>头文件改声明为 <code>STPop</code></td>
+</tr>
+<tr>
+<td><code>STDestroy</code></td>
+<td><code>STDestroy</code></td>
+<td><code>SLDestroy</code></td>
+<td>定义改名为 <code>STDestroy</code>，或声明/调用统一为 <code>SLDestroy</code></td>
+</tr>
+</tbody>
+</table>
+<p>还要注意，注释掉的第二段 <code>main</code> 也使用 <code>STInit</code>/<code>STPush</code>，将来解除注释时同样需要统一；程序只能保留<strong>一个</strong>有效的 <code>main</code>。上表只是说明如何对齐名称，没有修改下面保存的原文件。即使先解决当前的“未声明函数”，链接阶段仍会因 <code>STDestroy</code> 的定义名不一致而失败。</p>
+<h2 id="leetcode-20_1">四、LeetCode 20「有效的括号」</h2>
+<h3 id="_2">题目截图与要求</h3>
+<p><img alt="LeetCode 20 有效的括号题目截图，2026-10-01 用户提供" loading="lazy" src="images/leetcode-20-problem-2026-10-01.png"/></p>
+<p>题目给一个只包含 <code>()</code>、<code>[]</code>、<code>{}</code> 的字符串，判断每个左括号能否按<strong>类型相同、顺序正确</strong>的规则闭合。空字符串也符合“没有不匹配括号”的条件，结果为 <code>true</code>。截图中的 <code>"()"</code> 和 <code>"()[]{}"</code> 都返回 <code>true</code>。题目保证只有这六种字符，因此下面代码中的 <code>else</code> 可把非左括号视为右括号；若用于普通文本，就必须另外判断字符是否真是 <code>)</code>、<code>]</code>、<code>}</code>。</p>
+<h3 id="leetcode">我的 LeetCode 代码（保留原写法）</h3>
+<p>下面是我最初发来的实现，整理了换行与缩进，函数名和判断逻辑照原样保留。它同时包含栈结构、栈操作和 <code>isValid</code>，便于单独复盘题解。若和上面的本地三个文件一起编译，会重复定义栈函数；它是<strong>另一份题解代码展示</strong>，不是要直接拼进同一个 C 工程。这份题解原文没有写标准库头文件，若单独编译，需要补上 <code>assert.h</code>、<code>stdbool.h</code>、<code>stdio.h</code>、<code>stdlib.h</code>；这里的 <code>SLDataType</code> 是 <code>int</code>，可以容纳这些 ASCII 括号字符；<code>STTop</code> 返回后再赋给 <code>char</code> 用于比较。</p>
+<pre><code class="language-c">typedef int SLDataType;
+typedef struct Stack{
+    SLDataType* a;
+    int top;
+    int capacity;
+}ST;
+
+void SLInit(ST* pst){
+    assert(pst);
+    pst-&gt;a=NULL;
+    pst-&gt;top=0;
+    pst-&gt;capacity=0;
+}
+
+void SLDestroy(ST* pst){
+    assert(pst);
+    free(pst-&gt;a);
+    pst-&gt;top=pst-&gt;capacity=0;
+}
+
+void SLPush(ST* pst,SLDataType x){
+    assert(pst);
+    //扩容
+    if(pst-&gt;top==pst-&gt;capacity){
+        int newcapacity=pst-&gt;capacity==0?4:pst-&gt;capacity*2;
+        SLDataType* tmp=(SLDataType*)realloc(pst-&gt;a,sizeof(SLDataType)*newcapacity);
+        if(tmp==NULL){
+            perror("realloc fail");
+            return;
+        }
+        pst-&gt;a=tmp;
+        pst-&gt;capacity=newcapacity;
+    }
+    pst-&gt;a[pst-&gt;top]=x;
+    pst-&gt;top++;
+}
+
+void STPop(ST* pst){
+    assert(pst);
+    assert(pst-&gt;top&gt;0);
+    pst-&gt;top--;
+}
+
+SLDataType STTop(ST* pst){
+    assert(pst);
+    assert(pst-&gt;top&gt;0);
+    return pst-&gt;a[pst-&gt;top-1];
+}
+
+bool STEmpty(ST* pst){
+    assert(pst);
+    return pst-&gt;top==0;
+}
+
+int STsize(ST* pst){
+    assert(pst);
+    return pst-&gt;top;
+}
+
+bool isValid(char* s) {
+    ST st;
+    SLInit(&amp;st);
+    while(*s){
+        if(*s=='('||*s=='['||*s=='{'){
+            SLPush(&amp;st,*s);
+        }
+        else{
+            if(STEmpty(&amp;st)){
+                SLDestroy(&amp;st);
+                return false;
+            }
+            char top=STTop(&amp;st);
+            STPop(&amp;st);
+            if((top=='(' &amp;&amp; *s!=')') ||
+               (top=='[' &amp;&amp; *s!=']') ||
+               (top=='{' &amp;&amp; *s!='}')){
+                SLDestroy(&amp;st);
+                return false;
+            }
+        }
+        ++s;
+    }
+    bool ret = STEmpty(&amp;st);
+    SLDestroy(&amp;st);
+    return ret;
+}
+</code></pre>
+<h3 id="_3">为什么必须用栈？</h3>
+<p>遇到左括号就先记住，遇到右括号时必须匹配<strong>最近一个还未闭合的左括号</strong>。这正是栈“后进先出”：最后入栈的左括号，最先接受检查。比如 <code>([{}])</code>：依次压入 <code>(</code>、<code>[</code>、<code>{</code>，随后 <code>}</code> 配 <code>{</code>，<code>]</code> 配 <code>[</code>，<code>)</code> 配 <code>(</code>。如果只统计每类括号数量，<code>([)]</code> 虽然数量相等也会被误判为合法；用栈会发现读到 <code>)</code> 时栈顶是 <code>[</code>，当场返回 <code>false</code>。</p>
+<h3 id="isvalid"><code>isValid</code> 的执行过程</h3>
+<ol>
+<li><code>ST st; SLInit(&amp;st);</code> 创建并初始化一个空栈，用它只保存<strong>尚未配对的左括号</strong>。</li>
+<li><code>while (*s)</code> 逐字符扫描，直到遇到字符串结尾的 <code>\0</code>。<code>++s</code> 让指针移到下一个字符；本题的 <code>s</code> 是 LeetCode 传入的字符串首地址。</li>
+<li>如果是 <code>(</code>、<code>[</code>、<code>{</code>，<code>SLPush(&amp;st, *s)</code> 入栈，等待未来的右括号。</li>
+<li>否则遇到右括号时，先用 <code>STEmpty</code> 判断是否已有可匹配的左括号。没有就先 <code>SLDestroy</code> 再返回 <code>false</code>，例如输入 <code>")("</code> 在第一个字符就失败。</li>
+<li>非空时取出 <code>top = STTop(&amp;st)</code>，然后 <code>STPop(&amp;st)</code>。三个条件分别检查 <code>(</code> 对 <code>)</code>、<code>[</code> 对 <code>]</code>、<code>{</code> 对 <code>}</code>；任一对不匹配，就销毁栈并返回 <code>false</code>。</li>
+<li>字符全部扫描完后还要检查 <code>STEmpty(&amp;st)</code>。例如 <code>"(("</code> 没出现错误右括号，但仍有未闭合左括号，应返回 <code>false</code>。先把判断结果存进 <code>ret</code>，销毁栈后再返回它。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>输入</th>
+<th>关键一步</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"()[]{}"</code></td>
+<td>每个右括号都配当前栈顶，最后为空</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>"([{}])"</code></td>
+<td>闭合顺序 <code>{</code>、<code>[</code>、<code>(</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>"([)]"</code></td>
+<td>读到 <code>)</code> 时栈顶是 <code>[</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>"(]"</code></td>
+<td><code>(</code> 与 <code>]</code> 类型不一致</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>"(()"</code></td>
+<td>扫描完还有 <code>(</code> 留在栈里</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>")("</code></td>
+<td>第一个右括号到来时栈为空</td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_4">题解的易错点</h3>
+<ul>
+<li><strong>错误写法：只比较左右括号的数量。</strong> 为什么错：数量相同不保证顺序；<code>([)]</code> 就是反例。正确写法：右括号只与当前栈顶的左括号比较。以后判断：题目出现“最近一个未匹配项”时，先想栈。</li>
+<li><strong>错误写法：读到右括号先调用 <code>STTop</code>。</strong> 为什么错：输入从右括号开始时会在空栈取栈顶，触发断言。正确写法：先 <code>STEmpty</code>，再取栈顶。以后判断：任何需要栈顶的操作，先证明栈非空。</li>
+<li><strong>错误写法：扫描结束直接返回 <code>true</code>。</strong> 为什么错：<code>"(("</code> 没遇到错误右括号，但左括号没闭合。正确写法：结果取决于最终 <code>STEmpty(&amp;st)</code>。</li>
+<li><strong>错误写法：匹配失败直接返回。</strong> 为什么错：<code>st.a</code> 可能已申请内存，会泄漏。正确写法：每条提前返回路径先销毁栈；正常路径也要销毁。</li>
+<li><strong>当前实现的额外限制：</strong> <code>SLPush</code> 分配失败只是打印错误并返回 <code>void</code>，<code>isValid</code> 不知道压栈失败，可能给出错误结果；<code>SLDestroy</code> 释放后未清空 <code>a</code>。这两点是栈接口本身的问题，不是配对思路的问题。</li>
+</ul>
+<p>扫描一次字符串，设长度为 <code>n</code>：时间 <code>O(n)</code>，最坏情况下所有字符都是左括号，辅助空间 <code>O(n)</code>。这里的栈按 4、8、16……扩容，均摊入栈仍是常数时间。若空间分配失败，当前实现并不保证正确返回值；复杂度分析默认分配成功。</p>
+<h2 id="_5">五、复习时记住</h2>
+<p>栈的关键约定是 <code>top</code> 表示“下一个空位”，因此入栈写 <code>a[top]</code> 后 <code>top++</code>，出栈只需 <code>top--</code>，取栈顶用 <code>a[top - 1]</code>。<code>SLPush</code> 的关键是<strong>先判断是否满、用临时指针接 <code>realloc</code>、成功后更新地址和容量、最后写入并自增</strong>。括号题的关键是<strong>右括号只配最近的左括号</strong>，而且必须处理空栈、类型不符、扫描完仍有剩余三类情况。多文件练习还提醒我：头文件声明、实现定义、调用名称要逐个对齐，不能只看算法思路就以为程序已经能编译。</p></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://gotesla.github.io/">chengs</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://gotesla.github.io/2026/10/01/stack-and-leetcode-20-study-notes/">https://gotesla.github.io/2026/10/01/stack-and-leetcode-20-study-notes/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://gotesla.github.io/" target="_blank">chengs的妙妙屋</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/2026/10/01/stack-and-leetcode-20-study-notes/images/leetcode-20-problem-2026-10-01.png" data-sites="facebook,x,wechat,weibo,qq"></div><link href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'" rel="stylesheet"/><script defer="" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Giscus</span><span id="switch-btn"></span><span class="second-comment">Twikoo</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img alt="avatar" onerror="this.onerror=null;this.src='/img/friend_404.gif'" src="/img/Giselle3.jpg"/></div><div class="author-info-name">chengs</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a href="https://github.com/xxxxxx" id="card-info-btn" rel="noopener" target="_blank"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#atopcapacity">一、先认清这个栈： a 、 top 、 capacity</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stackh">Stack.h ：完整原代码</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#stackc">二、逐个看 Stack.c 的功能和用法</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stackc_1">Stack.c ：完整原代码</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slinit">SLInit ：初始化</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slpush">SLPush ：最需要搞懂的动态扩容</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sldestroy">SLDestroy ：销毁</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stpopsttopstemptystsize">STPop 、 STTop 、 STEmpty 、 STsize</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#testc">三、 test.c ：完整原代码与实际执行顺序</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#_1">这份原代码为什么目前编译不过？</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#leetcode-20_1">四、LeetCode 20「有效的括号」</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#_2">题目截图与要求</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#leetcode">我的 LeetCode 代码（保留原写法）</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#_3">为什么必须用栈？</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isvalid">isValid 的执行过程</a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#_4">题解的易错点</a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#_5">五、复习时记住</a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/10/01/stack-and-leetcode-20-study-notes/" title="栈的顺序表实现与 LeetCode 20 有效的括号：从扩容到配对判断">栈的顺序表实现与 LeetCode 20 有效的括号：从扩容到配对判断</a><time datetime="2026-10-01" title="发表于 2026-10-01">2026-10-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/28/linked-list-oj-138-141-142/" title="链表 OJ：随机链表复制与环形链表">链表 OJ：随机链表复制与环形链表</a><time datetime="2026-09-28" title="发表于 2026-09-28">2026-09-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/28/linked-list-oj-138-141-142/" title="链表 OJ：随机链表复制与环形链表">链表 OJ：随机链表复制与环形链表</a><time datetime="2026-09-28" title="发表于 2026-09-28">2026-09-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/16/c-contact-seqlist-study-notes/" title="C语言动态顺序表实现通讯录：从类型别名、指针到多文件编译">C语言动态顺序表实现通讯录：从类型别名、指针到多文件编译</a><time datetime="2026-09-16" title="发表于 2026-09-16">2026-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/14/c-seqlist-study-notes/" title="C语言动态顺序表学习笔记：从 size、capacity 到指针、动态内存与增删操作">C语言动态顺序表学习笔记：从 size、capacity 到指针、动态内存与增删操作</a><time datetime="2026-09-14" title="发表于 2026-09-14">2026-09-14</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/09/10/c-algorithms-notes/" title="从知识点到错题复盘：C 语言数组、递归与时间复杂度">从知识点到错题复盘：C 语言数组、递归与时间复杂度</a><time datetime="2026-09-10" title="发表于 2026-09-10">2026-09-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/03/07/hello-world/" title="Hello World">Hello World</a><time datetime="2026-03-07T09:49:45.269Z" title="发表于 2026-03-07 17:49:45">2026-03-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">© 2025 - 2026 By chengs</span><span class="framework-info"><span>框架 </span><a href="https://hexo.io" rel="noopener" target="_blank">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" rel="noopener" target="_blank">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式" type="button"><i class="fas fa-book-open"></i></button><button id="darkmode" title="日间和夜间模式切换" type="button"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" title="单栏和双栏切换" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" title="设置" type="button"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" title="目录" type="button"><i class="fas fa-list-ul"></i></button><a href="#post-comment" id="to_comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" title="回到顶部" type="button"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'gotesla/gotesla.github.io',
+      'data-repo-id': '',
+      'data-category-id': '',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !true) {
+    if (true) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo-vercel-kappa-flax.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = (el = document, path = location.pathname) => {
+    twikoo.init({
+      el: el.querySelector('#twikoo-wrap'),
+      envId: 'https://twikoo-vercel-kappa-flax.vercel.app/',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      },
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || path
+    })
+
+    GLOBAL_CONFIG_SITE.pageType === 'post' && getCount()
+
+    isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      if (el.children.length) {
+        el.innerHTML = ''
+        el.classList.add('no-comment')
+      }
+    })
+  }
+
+  const loadTwikoo = (el, path) => {
+    if (typeof twikoo === 'object') setTimeout(() => init(el, path), 0)
+    else btf.getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.44/dist/twikoo.all.min.js').then(() => init(el, path))
+  }
+
+  if (isShuoshuo) {
+    'Giscus' === 'Twikoo'
+      ? window.shuoshuoComment = { loadComment: loadTwikoo }
+      : window.loadOtherComment = loadTwikoo
+    return
+  }
+
+  if ('Giscus' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2.0.1/dist/Meting.min.js"></script>
+<meting-js api="https://api.injahow.cn/meting/?server=:server&amp;type=:type&amp;id=:id&amp;auth=:auth&amp;refer=:refer" fixed="true" id="2613364493" list-folded="true" mini="true" order="random" server="netease" theme="#ff6b81" type="playlist">
+</meting-js>
+<script>
+  (function() {
+    const runAnimation = () => {
+      const selectors = ['#recent-posts > .recent-post-item', '.card-widget', '#post', '#page', '.layout'];
+      const targets = document.querySelectorAll(selectors.join(','));
+      targets.forEach(el => {
+        if (el && !el.classList.contains('animate-item')) {
+          el.classList.add('animate-item');
+        }
+      });
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('is-visible');
+          else entry.target.classList.remove('is-visible');
+        });
+      }, { threshold: 0.01, rootMargin: '-50px 0px -50px 0px' });
+      targets.forEach(item => {
+        if (item) {
+          observer.unobserve(item);
+          observer.observe(item);
+        }
+      });
+    };
+
+    const initProgress = () => {
+      if (!document.getElementById('read-progress')) {
+        const progDiv = document.createElement('div');
+        progDiv.id = 'read-progress';
+        document.body.appendChild(progDiv);
+      }
+      window.onscroll = () => {
+        const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const el = document.getElementById('read-progress'); // 修正了这里的空格
+        if (el) el.style.width = (winScroll / height) * 100 + "%";
+      };
+    };
+
+    if (!window.heartInit) {
+      window.addEventListener('click', (e) => {
+        const heart = document.createElement('div');
+        heart.className = 'click-heart';
+        heart.innerHTML = '❤';
+        heart.style.left = (e.clientX - 10) + 'px';
+        heart.style.top = (e.clientY - 10) + 'px';
+        heart.style.color = `hsl(${Math.random() * 360}, 100%, 75%)`;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 800);
+      });
+      window.heartInit = true;
+    }
+
+    initProgress();
+    runAnimation();
+
+    document.addEventListener('pjax:complete', () => {
+      initProgress();
+      runAnimation();
+    });
+  })();
+</script>
+<script async="async" id="click-heart" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js"></script><script defer="defer" src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:description\"]","link[rel=\"canonical\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || item.innerHTML || ""
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    if (e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404.html')
+        : window.location.href = e.request.responseURL
+    }
+  })
+})</script><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
